@@ -48,6 +48,20 @@ document.getElementById("submit").addEventListener('click', async function(){
       return
     }
 
+    const answerAsArray = inputAnswer.split("")
+    console.log(answerAsArray)
+    for(i=0; i<answerAsArray.length; i++){
+      console.log(answerAsArray[i] == "a")
+      if(answerAsArray[i] != "a" && answerAsArray[i] != "b" && answerAsArray[i] != "c"){
+        alert("INVALID: answer must only be made up of 'a', 'b', and 'c'. answer must also be lowercase")
+        return
+      }
+    }
+    const answerAsSet = new Set(answerAsArray)
+    if(answerAsSet.size != answerAsArray.length){
+        alert("INVALID: answer must contain at most 1 of each letter 'a', 'b', and 'c', no duplicates")
+        return
+    }
     let questionObject = JSON.stringify({ 
         question: inputQuestion, 
         a: inputA,
