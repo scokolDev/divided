@@ -8,26 +8,32 @@ let Fard = document.getElementById("Fard")
 
 let kickedPlayer = undefined
 let _MAX_PLAYERS = 4
-let numOfPlayers = 4
 let consensusAnswer = undefined
-let takeoverCounter = 2
-let initHoldTime = 10
-let cashAmt = 5000; //starting cashAmt
-let bankAmt = 0;
+let takeoverCounter = 2 //number of takeovers per game
+const initHoldTime = 10 //length of a timeout during kick round
+let bankAmt = 0; //starting bank amount
+// let numOfPlayers = 4
+
+let cashAmt = 0;  //starting cashAmt on sand clock bar when page first loads
+let time = 100; //starting timer amount when page first loads
+
+
+let isCurrentlyPolling = false;
 let potentialWin = 0
 let potentialLose = 0
-let barStartTime;
-let timeStartTime;
 let cashStartTime;
-let time = 100;
+// let barStartTime;
+// let timeStartTime;
+
+let currentHoldTime = 0
 let isruinning = false;
 let isflashing = false;
 let isFail = false
 let isKickRound = false
 let isFinalRound = false
 let isHoldActive = false
-let rate = 167;
-let sub = cashAmt/1200;
+// let rate = 167;
+// let sub = cashAmt/1200;
 let playerInterval
 let lastTickTime = undefined
 let pausedTime = 0
@@ -40,6 +46,7 @@ let revealInt
 let loadInt = undefined
 
 let activePlayers = []
+let playerTimeouts = [false, false, false, false]
 let finalPlayerStanding = []
 let finalPlayerAmounts = []
 
@@ -64,6 +71,22 @@ LBPlayer4Amount = document.getElementById("LBPlayer4Amount")
 
 winningImg1 = document.getElementById("winningImg1")
 winningImg2 = document.getElementById("winningImg2")
+
+const quesionBox = document.getElementById("quesionBox");
+const prompt = document.getElementById("prompt");
+const aAnswer = document.getElementById("aAnswer");
+const bAnswer = document.getElementById("bAnswer");
+const cAnswer = document.getElementById("cAnswer");
+const dAnswer = document.getElementById("dAnswer");
+
+const aletterContainer = document.getElementById("aletterContainer");
+const bletterContainer = document.getElementById("bletterContainer");
+const cletterContainer = document.getElementById("cletterContainer");
+
+const ALetter = document.getElementById("A");
+const BLetter = document.getElementById("B");
+const CLetter = document.getElementById("C");
+const DLetter = document.getElementById("D");
 
 function revealLeaderBoard(){
     Feddy.play()
@@ -108,19 +131,19 @@ function revealLeaderBoard(){
     setTimeout(function(){
         LBPlayer3.style.animation = "revealLBPlayer 3s"
         LBPlayer3.style.opacity = "1"
-    }, 2000)
+    }, 1500)
     
 
     setTimeout(function(){
         LBPlayer2.style.animation = "revealLBPlayer 3s"
         LBPlayer2.style.opacity = "1"
-    }, 4000)
+    }, 3000)
     
 
     setTimeout(function(){
         LBPlayer1.style.animation = "revealLBPlayer 3s"
         LBPlayer1.style.opacity = "1"
-    }, 6000)
+    }, 4500)
     
     
     
@@ -159,6 +182,7 @@ const speakingInt = setInterval(async function(){
         player4Box.style.border = "10px solid rgb(0, 0, 0)"
     }
 }, 100)
+
 //check if start command has been sent to the server
 async function checkIfStarted(){
     const res = await fetch(baseURL + "isStart")
@@ -237,152 +261,6 @@ async function listenForLoad(){
 }
 
 
-// let startIntz = setInterval(async function handleEvent(){
-//     const res = await fetch(baseURL + "isStart")
-//     const data = await res.json()
-//     console.log(data)
-//     if(data.start == true){
-//         start()
-//         clearInterval(startIntz)
-//     }
-    
-// }, 50)
-
-// QuestionInt = setInterval(async function handleEvent(){
-//     const res = await fetch(baseURL + "getQuestionSelection")
-//     if(res.status != 201){
-//         const data = await res.json()
-//         console.log(data)
-//         qObj = JSON.parse(data)
-//         loadQuestion(qObj)
-//         clearInterval(QuestionInt)
-//     }
-// }, 50)
-
-// revealInt = setInterval(async function handleEvent(){
-//     const res = await fetch(baseURL + "getQuestionSelection")
-//     if(res.status != 201){
-//         const data = await res.json()
-//         console.log(data.selQ)
-//         clearInterval(QuestionInt)
-//     }
-// }, 50)
-
-//const text = '{"question":"what percent of americans were obese in the years 2017 - 2020?","a":"1%","b":"10%","c":"100%","c":"100%","qestion-type":"single","answer":"b",}';
-// const buttonList = document.getElementById("button-holder");
-const quesionBox = document.getElementById("quesionBox");
-const prompt = document.getElementById("prompt");
-const aAnswer = document.getElementById("aAnswer");
-const bAnswer = document.getElementById("bAnswer");
-const cAnswer = document.getElementById("cAnswer");
-const dAnswer = document.getElementById("dAnswer");
-
-const aletterContainer = document.getElementById("aletterContainer");
-const bletterContainer = document.getElementById("bletterContainer");
-const cletterContainer = document.getElementById("cletterContainer");
-
-const ALetter = document.getElementById("A");
-const BLetter = document.getElementById("B");
-const CLetter = document.getElementById("C");
-const DLetter = document.getElementById("D");
-
-
-// const arr = [];
-// const q1 = JSON.parse('{"question":"determine the proper order of these events?", "a":"pee", "b":"poop", "c":"fard", "answerType":"order", "answer":"cab", "value":5000, "newTime": 60}');arr.push(q1);
-// const q2 = JSON.parse('{"question":"how many men out of 100 smoke cigarettes?", "a":"5", "b":"23", "c":"83", "answerType":"double", "answer":"ac", "value":5000, "newTime": 60}');arr.push(q2);
-// const q3 = JSON.parse('{"question":"erm scallops?", "a":"sigma", "b":"brain rot", "c":"skibidi", "answerType":"single", "answer":"c", "value":20000, "newTime": 100}');arr.push(q3);
-// const q4 = JSON.parse('{"question":"who rizzed up livvy dunne?", "a":"Baby Gronk", "b":"Trevor", "c":"Deshaun Watson", "answerType":"single", "answer":"a", "value":10000, "newTime": 75}');arr.push(q4);
-// const q5 = JSON.parse('{"question":"What is the acutal name of the Overwatch DIGGER?", "a":"Melusi", "b":"DIGGER", "c":"Venture", "answerType":"single", "answer":"c", "value":5000, "newTime": 60}');arr.push(q5);
-// const q6 = JSON.parse('{"question":"which two can be used to complete the sentence `erm...what the _____`?", "a":"sigma", "b":"scallop", "c":"skibidi", "answerType":"double", "answer":"ab", "value":2000, "newTime": 150}');arr.push(q6);
-
-// let kickRoundButton = document.createElement("button")
-// kickRoundButton.innerHTML = "kick Round"
-// kickRoundButton.setAttribute('class', "button");
-// kickRoundButton.addEventListener('click', async function(){
-//     if(kickedPlayer == undefined){
-//         updateStartAmts(bankAmt, 30)
-//         fullBoardReset()
-    
-//         const res = await fetch(baseURL + "names")
-//         const data = await res.json()
-    
-//         currentQuestion = "vote to kick a player"
-//         QuestionConText.innerHTML = "vote to kick a player";
-//         ALetter.innerHTML = "1"
-//         BLetter.innerHTML = "2"
-//         CLetter.innerHTML = "3"
-//         DLetter.innerHTML = "4"
-//         aAnswer.innerHTML = data.player1;
-//         bAnswer.innerHTML = data.player2;
-//         cAnswer.innerHTML = data.player3;
-//         dAnswer.innerHTML = data.player4;
-//         dBox.style.visibility = "visible"
-//         isQuestionLoaded = false
-//         isKickRound = true
-//         isFail = false
-//         pausedTime = 0
-//     }else{
-//         alert("erm...player has already been kicked WOMP WOMP")
-//     }
-    
-// })
-// buttonList.appendChild(kickRoundButton);
-
-
-// let finalRoundButton = document.createElement("button")
-// finalRoundButton.innerHTML = "final Round"
-// finalRoundButton.setAttribute('class', "button");
-// finalRoundButton.addEventListener('click', async function(){
-//     if(kickedPlayer != undefined){
-//         updateStartAmts(bankAmt, 100)
-//         fullBoardReset()
-    
-//         currentQuestion = "choose which value you deserve!"
-//         QuestionConText.innerHTML = "choose which value you deserve!";
-//         ALetter.innerHTML = "1"
-//         BLetter.innerHTML = "2"
-//         CLetter.innerHTML = "3"
-//         aAnswer.innerHTML = formatCash(bankAmt*.6);
-//         bAnswer.innerHTML = formatCash(bankAmt*.3);
-//         cAnswer.innerHTML = formatCash(bankAmt*.1);
-
-//         aAnswer.style.fontFamily = "FixedBold";
-//         bAnswer.style.fontFamily = "FixedBold";
-//         cAnswer.style.fontFamily = "FixedBold";
-//         isQuestionLoaded = false
-//         isFinalRound = true
-//         isFail = false
-//         pausedTime = 0
-//     }else{
-//         alert("erm...it is not time brotha")
-//     }
-    
-// })
-// buttonList.appendChild(finalRoundButton);
-
-// for (let i = 0; i < arr.length; i++) {
-//     let button = document.createElement("button")
-//     button.innerHTML = "Q" + (i+1)
-//     button.setAttribute('questionIndex', i);
-//     button.setAttribute('class', "button");
-//     button.addEventListener('click', function(){
-//         qIndex = parseInt(this.getAttribute('questionIndex'))
-//         selectedQuestion = arr[qIndex]
-//         updateStartAmts(selectedQuestion.value, selectedQuestion.newTime)
-
-//         fullBoardReset()
-//         currentQuestion = selectedQuestion
-//         QuestionConText.innerHTML = currentQuestion.question;
-//         aAnswer.innerHTML = currentQuestion.a;
-//         bAnswer.innerHTML = currentQuestion.b;
-//         cAnswer.innerHTML = currentQuestion.c;
-//         isQuestionLoaded = false
-//         isKickRound = false
-//         isFail = false
-//         pausedTime = 0
-//     })
-//     buttonList.appendChild(button);
-// }
 let currentQAnswerType
 async function selectQuestion(QuestionObj){
     if(QuestionObj.question == "kick"){
@@ -401,53 +279,16 @@ async function selectQuestion(QuestionObj){
             DLetter.innerHTML = "4"
             aAnswer.innerHTML = data.player1;
             adjustTextToFillCon(aAnswer, 40, false)
-            // let answerBasefontsize = 40
-            // aAnswer.style.fontSize = answerBasefontsize + "px";
-            // while (aAnswer.scrollWidth > aAnswer.clientWidth) {
-            //     console.log("a:" + aAnswer.scrollWidth + " " + 
-            //     aAnswer.clientWidth + " " + 
-            //     aAnswer.style.fontSize)
-            //     aAnswer.style.fontSize = (answerBasefontsize--) + "px";
-            //     console.log("a:" + aAnswer.scrollWidth + " " + 
-            //     aAnswer.clientWidth + " " + 
-            //     aAnswer.style.fontSize)
-            // }
+
             bAnswer.innerHTML = data.player2;
             adjustTextToFillCon(bAnswer, 40, false)
-            // answerBasefontsize = 40
-            // bAnswer.style.fontSize = answerBasefontsize + "px";
-            // while (bAnswer.scrollWidth > bAnswer.clientWidth) {
-            //     console.log("b:" + bAnswer.scrollWidth + " " + 
-            //     bAnswer.clientWidth + " " + 
-            //     bAnswer.style.fontSize)
-            //     bAnswer.style.fontSize = (answerBasefontsize--) + "px";
-            //     console.log("b:" + bAnswer.scrollWidth + " " + 
-            //     bAnswer.clientWidth + " " + 
-            //     bAnswer.style.fontSize)
-            // }
+
             cAnswer.innerHTML = data.player3;
             adjustTextToFillCon(cAnswer, 40, false)
-            // answerBasefontsize = 40
-            // cAnswer.style.fontSize = answerBasefontsize + "px";
-            // while (cAnswer.scrollWidth > cAnswer.clientWidth) {
-            //     console.log("c:" + cAnswer.scrollWidth + " " + 
-            //     cAnswer.clientWidth + " " + 
-            //     cAnswer.style.fontSize)
-            //     cAnswer.style.fontSize = (answerBasefontsize--) + "px";
-            // }
+
             dAnswer.innerHTML = data.player4;
             adjustTextToFillCon(dAnswer, 40, false)
-            // answerBasefontsize = 40
-            // dAnswer.style.fontSize = answerBasefontsize + "px";
-            // while (dAnswer.scrollWidth > dAnswer.clientWidth) {
-            //     console.log("d:" + dAnswer.scrollWidth + " " + 
-            //     dAnswer.clientWidth + " " + 
-            //     dAnswer.style.fontSize)
-            //     dAnswer.style.fontSize = (answerBasefontsize--) + "px";
-            //     console.log("b:" + dAnswer.scrollWidth + " " + 
-            //     dAnswer.clientWidth + " " + 
-            //     dAnswer.style.fontSize)
-            // }
+
             dBox.style.visibility = "visible"
             isQuestionSelected = true
             isQuestionLoaded = false
@@ -477,44 +318,14 @@ async function selectQuestion(QuestionObj){
 
             aAnswer.innerHTML = formatCash(bankAmt*.6);
             adjustTextToFillCon(aAnswer, 40, false)
-            // let answerBasefontsize = 40
-            // aAnswer.style.fontSize = answerBasefontsize + "px";
-            // while (aAnswer.scrollWidth > aAnswer.clientWidth) {
-            //     console.log("a:" + aAnswer.scrollWidth + " " + 
-            //     aAnswer.clientWidth + " " + 
-            //     aAnswer.style.fontSize)
-            //     aAnswer.style.fontSize = (answerBasefontsize--) + "px";
-            //     console.log("a:" + aAnswer.scrollWidth + " " + 
-            //     aAnswer.clientWidth + " " + 
-            //     aAnswer.style.fontSize)
-            // }
 
 
             bAnswer.innerHTML = formatCash(bankAmt*.3);
             adjustTextToFillCon(bAnswer, 40, false)
-            // answerBasefontsize = 40
-            // bAnswer.style.fontSize = answerBasefontsize + "px";
-            // while (bAnswer.scrollWidth > bAnswer.clientWidth) {
-            //     console.log("b:" + bAnswer.scrollWidth + " " + 
-            //     bAnswer.clientWidth + " " + 
-            //     bAnswer.style.fontSize)
-            //     bAnswer.style.fontSize = (answerBasefontsize--) + "px";
-            //     console.log("b:" + bAnswer.scrollWidth + " " + 
-            //     bAnswer.clientWidth + " " + 
-            //     bAnswer.style.fontSize)
-            // }
 
 
             cAnswer.innerHTML = formatCash(bankAmt*.1);
             adjustTextToFillCon(cAnswer, 40, false)
-            // answerBasefontsize = 40
-            // cAnswer.style.fontSize = answerBasefontsize + "px";
-            // while (cAnswer.scrollWidth > cAnswer.clientWidth) {
-            //     console.log("c:" + cAnswer.scrollWidth + " " + 
-            //     cAnswer.clientWidth + " " + 
-            //     cAnswer.style.fontSize)
-            //     cAnswer.style.fontSize = (answerBasefontsize--) + "px";
-            // }
 
             aAnswer.style.fontFamily = "FixedBold";
             bAnswer.style.fontFamily = "FixedBold";
@@ -541,59 +352,18 @@ async function selectQuestion(QuestionObj){
 
         QuestionConText.innerHTML = QuestionObj.question;
         adjustTextToFillCon(QuestionConText, 40, true)
-        // let QuestionBasefontsize = 40
-        // QuestionConText.style.fontSize = QuestionBasefontsize + "px";
-        // while (QuestionConText.scrollHeight > QuestionConText.clientHeight) {
-        //     console.log("QuestionConText:" + QuestionConText.scrollHeight + " " + 
-        //     QuestionConText.clientHeight + " " + 
-        //     QuestionConText.style.fontSize)
-        //     QuestionConText.style.fontSize = (QuestionBasefontsize--) + "px";
-        //     console.log("a:" + QuestionConText.scrollHeight + " " + 
-        //     QuestionConText.clientHeight + " " + 
-        //     QuestionConText.style.fontSize)
-        // }
 
 
         aAnswer.innerHTML = QuestionObj.a;
         adjustTextToFillCon(aAnswer, 40, false)
-        // let answerBasefontsize = 40
-        // aAnswer.style.fontSize = answerBasefontsize + "px";
-        // while (aAnswer.scrollWidth > aAnswer.clientWidth) {
-        //     console.log("a:" + aAnswer.scrollWidth + " " + 
-        //     aAnswer.clientWidth + " " + 
-        //     aAnswer.style.fontSize)
-        //     aAnswer.style.fontSize = (answerBasefontsize--) + "px";
-        //     console.log("a:" + aAnswer.scrollWidth + " " + 
-        //     aAnswer.clientWidth + " " + 
-        //     aAnswer.style.fontSize)
-        // }
 
 
         bAnswer.innerHTML = QuestionObj.b;
         adjustTextToFillCon(bAnswer, 40, false)
-        // answerBasefontsize = 40
-        // bAnswer.style.fontSize = answerBasefontsize + "px";
-        // while (bAnswer.scrollWidth > bAnswer.clientWidth) {
-        //     console.log("b:" + bAnswer.scrollWidth + " " + 
-        //     bAnswer.clientWidth + " " + 
-        //     bAnswer.style.fontSize)
-        //     bAnswer.style.fontSize = (answerBasefontsize--) + "px";
-        //     console.log("b:" + bAnswer.scrollWidth + " " + 
-        //     bAnswer.clientWidth + " " + 
-        //     bAnswer.style.fontSize)
-        // }
 
 
         cAnswer.innerHTML = QuestionObj.c;
         adjustTextToFillCon(cAnswer, 40, false)
-        // answerBasefontsize = 40
-        // cAnswer.style.fontSize = answerBasefontsize + "px";
-        // while (cAnswer.scrollWidth > cAnswer.clientWidth) {
-        //     console.log("c:" + cAnswer.scrollWidth + " " + 
-        //     cAnswer.clientWidth + " " + 
-        //     cAnswer.style.fontSize)
-        //     cAnswer.style.fontSize = (answerBasefontsize--) + "px";
-        // }
 
 
 
@@ -623,24 +393,6 @@ let initHeight = bar.offsetHeight;
 const handle = document.getElementById("handle");
 const cashBox = document.getElementById("num-box");
 
-//buttons
-// const start_Btn = document.getElementById("start")
-// const cut_Btn = document.getElementById("cut")
-// const hold_Btn = document.getElementById("hold")
-// const showTable_Btn = document.getElementById("showTable")
-// const hideTable_Btn = document.getElementById("hideTable")
-// const stage1_Btn = document.getElementById("stage-1");
-// const stage2_Btn = document.getElementById("stage-2");
-// const stage3_Btn = document.getElementById("stage-3");
-// const stage4_Btn = document.getElementById("stage-4");
-// const yuh_Btn = document.getElementById("yuh");
-// const nah_Btn = document.getElementById("nah");
-// const loadNames = document.getElementById("loadNames");
-const load = document.getElementById("load");
-const revealAnswer = document.getElementById("revealAnswer");
-// const hideQuestion = document.getElementById("hideQuestion");
-// const takeoverBtn = document.getElementById("takeover");
-const resetServer = document.getElementById("resetServer");
 
 //table elements
 const win = document.getElementById("win");
@@ -691,6 +443,8 @@ function adjustTextToFillCon(container, initialFontSize, isVertical){
         container.style.fontSize)
     return basefontsize
 }
+
+
 //converts float to string money value with $ and commas. rounds to 2 places
 //
 //money: float dollar value
@@ -752,31 +506,6 @@ const Startflash = (element, delay1, color1, color2) => {
         counter++;
     }, delay1);
 }
-// const updateTimer = () =>{
-//     time--;
-//     if(time < 4 && !isflashing){
-//     //timer.style.fontFamily = "bumber";
-//     flashInterval = Startflash(timer, 200, "red", "orange");
-//     isflashing=true;
-//     }
-//     timer.innerHTML = time;
-//     if(time < 1){
-//         let LastHeight = bar.offsetHeight;
-//         cashAmt = 0;
-//         updateCash(1);
-//         drainBar(1);
-//         bar.style.height = "0px";
-//         bar.style.top = bar.offsetTop+LastHeight + "px";
-//         handle.style.top = handle.offsetTop+LastHeight + "px";
-//         cashBox.style.top = cashBox.offsetTop+LastHeight + "px";
-//         console.log("timer stopped sand clock"); 
-//         isFail = true
-//         if(!isKickRound){
-//             pause();
-//         }
-//         clearInterval(flashInterval);
-//     }
-// }
 const updateTimer = (newTime) =>{
     if(newTime < 4 && !isflashing){
         //timer.style.fontFamily = "bumber";
@@ -806,8 +535,6 @@ const updateTimer = (newTime) =>{
                     finalPlayerStanding.push(activePlayers[i])
                 }
             }
-            console.log("😭😭😭😭😭😭active players:" + activePlayers)
-            console.log("😭😭😭😭😭😭finalPlayerStanding:" + finalPlayerStanding)
             setUpLeaderBoard()
         }
         clearInterval(flashInterval);
@@ -815,32 +542,6 @@ const updateTimer = (newTime) =>{
     }
     //console.log(newTime)
 }
-// const MainClock = () =>{
-//     if(!isFail && !isHoldActive){
-//         let cur = Date.now() - pausedTime;
-//         let elapsedTime = cur - cashStartTime
-//         lastTickTime = cur
-//         if(elapsedTime/((initialTime+1)*1000)<1){
-//             updateCash((cur - cashStartTime)/((initialTime+1)*1000));
-//         }
-//         if(cur - timeStartTime > 1000){
-//             updateTimer();
-//             timeStartTime = Date.now() - pausedTime;
-//         }
-//         if((cur - cashStartTime)/(initialTime*1000)<1){
-//             drainBar((cur - cashStartTime)/(initialTime*1000));
-//         }
-//     }
-    
-
-//     if(isKickRound){
-//         updateKickAnswers()
-//     }else if(isFinalRound){
-//         updateFinalAnswers()
-//     }else{
-//         updateAnswers()
-//     }
-// }
 const MainClock = () =>{
     if(!isFail && !isHoldActive){
         console.log("cashStartTime: ---------- "  + cashStartTime)
@@ -856,6 +557,7 @@ const MainClock = () =>{
             updateCash(1);
             drainBar(1);
         }
+
         updateTimer(timeLeft);
         lastTickTime = cur
     }
@@ -869,81 +571,6 @@ const MainClock = () =>{
         updateAnswers()
     }
 }
-
-// async function updateAnswers() {
-//     let correctAnswer = undefined
-//     let lockedIn = true
-
-//     const res = await fetch(baseURL + "answers")
-//     const data = await res.json()
-//     console.log("player1: " + data.player1 + "\nplayer2: " + data.player2 + "\nplayer3: " + data.player3 + "\nplayer4: " + data.player4)
-    
-//     if(kickedPlayer != 1){
-//         if(data.player1 != undefined){
-//             player1Answer.innerHTML = data.player1
-//             correctAnswer = data.player1
-//         }else(lockedIn = false)
-//     }else{
-//         lockedIn = false
-//         if(data.player2 == data.player3 && data.player3 == data.player4){
-//             player2Answer.innerHTML = data.player2
-//             player3Answer.innerHTML = data.player3
-//             player4Answer.innerHTML = data.player4
-//             pause()
-//             return
-//         }
-//     }
-
-//     if(kickedPlayer != 2){
-//         if(data.player2 != undefined){
-//             player2Answer.innerHTML = data.player2
-//             if(data.player2 != correctAnswer){lockedIn = false}
-//         }else(lockedIn = false)
-//     }else{
-//         lockedIn = false
-//         if(data.player1 == data.player3 && data.player3 == data.player4){
-//             player1Answer.innerHTML = data.player1
-//             player3Answer.innerHTML = data.player3
-//             player4Answer.innerHTML = data.player4
-//             pause()
-//             return
-//         }
-//     }
-
-//     if(kickedPlayer != 3){
-//         if(data.player3 != undefined){
-//             player3Answer.innerHTML = data.player3
-//             if(data.player3 != correctAnswer){lockedIn = false}
-//         }else(lockedIn = false)
-//     }else{
-//         lockedIn = false
-//         if(data.player1 == data.player2 && data.player2 == data.player4){
-//             player1Answer.innerHTML = data.player1
-//             player2Answer.innerHTML = data.player2
-//             player4Answer.innerHTML = data.player4
-//             pause()
-//             return
-//         }
-//     }
-
-//     if(kickedPlayer != 4){
-//         if(data.player4 != undefined){
-//             player4Answer.innerHTML = data.player4
-//             if(data.player4 != correctAnswer){lockedIn = false}
-//         }else(lockedIn = false)
-//     }else{
-//         lockedIn = false
-//         if(data.player1 == data.player2 && data.player2 == data.player4){
-//             player1Answer.innerHTML = data.player1
-//             player2Answer.innerHTML = data.player2
-//             player4Answer.innerHTML = data.player4
-//             pause()
-//             return
-//         }
-//     }
-
-//     if(lockedIn){pause()}
-// }
 
 function takeover(player){
     console.log("?????????????????" + playerAnswerElements[player-1].innerHTML + "?????????????????")
@@ -968,6 +595,7 @@ function takeover(player){
     }
     return false
 }
+
 function verifyAnswer(answer){
     let maxLength
     switch(currentQAnswerType){
@@ -1019,78 +647,13 @@ function sortStr(str){
     return str
 }
 
-let isCurrentlyPolling = false;
-// async function updateAnswers() {
-//     if(isCurrentlyPolling){
-//         return
-//     }
-//     isCurrentlyPolling = true
-//     const res = await fetch(baseURL + "answers")
-//     const data = await res.json()
 
-//     let contestantAnswers = [data.player1, data.player2, data.player3, data.player4]
 
-//     for(i = 0; i < contestantAnswers.length; i++){
-//         if(contestantAnswers[i] != undefined){
-//             contestantAnswers[i] = contestantAnswers[i].toUpperCase().replaceAll(" ", '')
-//             if(currentQAnswerType == "double"){contestantAnswers[i] = sortStr(contestantAnswers[i])}
-//         }  
-//     }
-    
-    
+function setUpLeaderBoard(){
+    gameWrapper.style.display = "none"
+    LBWrapper.style.display = "flex"
+}
 
-//     let isAllAnswered = true
-//     if(kickedPlayer == undefined){
-//         for(i = 0; i < 4; i++){
-//             if(playerAnswerElements[i].innerHTML != contestantAnswers[i]){
-//                 if(verifyAnswer(contestantAnswers[i])){
-//                     if(contestantAnswers[i].length > 3){
-//                         if(takeoverCounter > 0){
-//                             if(takeover(i+1)){
-//                                 return
-//                             }
-//                         }
-//                     }else{
-//                         playerAnswerElements[i].innerHTML = contestantAnswers[i]
-//                     }
-//                 }else{isAllAnswered = false}
-//             }
-//         }
-//         if(isAllAnswered){
-//             if(contestantAnswers[0] == contestantAnswers[1] && contestantAnswers[1] == contestantAnswers[2] && contestantAnswers[2] == contestantAnswers[3]){
-//                 consensusAnswer = contestantAnswers[0]
-//                 pause()
-//                 return
-//             }
-//         }
-//     }else{
-//         for(i = 0; i < 4; i++){
-//             if(i+1 != kickedPlayer){
-//                 if(verifyAnswer(contestantAnswers[i])){
-//                     if(contestantAnswers[i].length > 3 && takeoverCounter > 0){
-//                         if(takeover(i+1)){
-//                             return
-//                         }
-//                     }else{
-//                         playerAnswerElements[i].innerHTML = contestantAnswers[i]
-//                     }
-//                 }else{isAllAnswered = false}
-//             }
-//         }
-
-//         contestantAnswers.splice(kickedPlayer-1, 1)
-
-//         if(isAllAnswered){
-//             if(contestantAnswers[0] == contestantAnswers[1] && contestantAnswers[1] == contestantAnswers[2]){
-//                 consensusAnswer = contestantAnswers[0]
-//                 pause()
-//                 return
-//             }
-//         }
-//     }
-//     console.log(contestantAnswers)
-//     isCurrentlyPolling = false
-// }
 function formatAndVerify(str){
     let maxLength
     let buffer = ""
@@ -1152,6 +715,55 @@ function formatAndVerifyKick(str, playerIndex){
     }
     return undefined
 }
+function formatAndVerifyFinal(str){
+    let maxLength = 1
+    
+    if(str == undefined){return undefined}
+    let answer = str.toUpperCase()
+    if(answer.length != maxLength){
+        return undefined
+    }else{
+
+        answerChar = answer.substring(0, 1)
+
+        switch(answerChar){
+            case("1"):
+                return '1'
+            case("2"):
+                return '2'
+            case("3"):
+                return '3'
+        }
+    }
+    return undefined
+}
+
+function kickPlayer(playerIndex){
+    playerBoxElements[playerIndex-1].style.visibility = "hidden"
+    kickedPlayer = playerIndex
+    
+    let answerBox
+    switch(playerIndex){
+        case("1"):
+            answerBox = "a"
+            break
+        case("2"):
+            answerBox = "b"
+            break
+        case("3"):
+            answerBox = "c"
+            break
+        case("4"):
+            answerBox = "d"
+            break
+    }
+    revealSingleAnswers(answerBox)
+
+    
+    
+    listenForQuestion()
+}
+
 async function updateAnswers() {
     if(isCurrentlyPolling){
         return
@@ -1218,50 +830,6 @@ async function updateAnswers() {
     console.log(contestantAnswers)
     isCurrentlyPolling = false
 }
-function verifyKickAnswer(answer, playerIndex){
-    let possibleAnswers = ["1", "2", "3", "4"]
-    possibleAnswers.splice(playerIndex, 1)
-    if(answer == undefined){
-        return false
-    }else if(answer.length > 1){
-        if(answer.toUpperCase() == "TIMEOUT"){
-            return true
-        }
-        return false
-    }else{
-        if(answer != possibleAnswers[0] && answer != possibleAnswers[1] && answer != possibleAnswers[2]){
-            return false
-        }
-        return true
-    }
-}
-function kickPlayer(playerIndex){
-    playerBoxElements[playerIndex-1].style.visibility = "hidden"
-    kickedPlayer = playerIndex
-    
-    let answerBox
-    switch(playerIndex){
-        case("1"):
-            answerBox = "a"
-            break
-        case("2"):
-            answerBox = "b"
-            break
-        case("3"):
-            answerBox = "c"
-            break
-        case("4"):
-            answerBox = "d"
-            break
-    }
-    revealSingleAnswers(answerBox)
-
-    
-    
-    listenForQuestion()
-}
-
-let playerTimeouts = [false, false, false, false]
 async function updateKickAnswers() {
     if(isCurrentlyPolling){
         return
@@ -1332,42 +900,6 @@ async function updateKickAnswers() {
     console.log(contestantAnswers)
     isCurrentlyPolling = false
 }
-function setUpLeaderBoard(){
-    gameWrapper.style.display = "none"
-    LBWrapper.style.display = "flex"
-}
-function verifyFinalAnswer(answer){
-    if(answer == undefined || answer.length > 1){
-        return false
-    }else{
-        if(answer != "1" && answer != "2" && answer != "3"){
-            return false
-        }
-        return true
-    }
-}
-function formatAndVerifyFinal(str){
-    let maxLength = 1
-    
-    if(str == undefined){return undefined}
-    let answer = str.toUpperCase()
-    if(answer.length != maxLength){
-        return undefined
-    }else{
-
-        answerChar = answer.substring(0, 1)
-
-        switch(answerChar){
-            case("1"):
-                return '1'
-            case("2"):
-                return '2'
-            case("3"):
-                return '3'
-        }
-    }
-    return undefined
-}
 async function updateFinalAnswers() {
     if(isCurrentlyPolling){
         return
@@ -1427,14 +959,15 @@ async function updateFinalAnswers() {
     
     isCurrentlyPolling = false
 }
+
+
+
 //////////////////////////////playback///////////////////////////////////
 async function start(){
     clearInterval(playerInterval)
     await resetAnswers()
     if(isQuestionLoaded){
         if(!isruinning){
-            barStartTime = Date.now();
-            timeStartTime = Date.now();
             cashStartTime = Date.now();
             testint = setInterval(MainClock);
             isruinning = true;
@@ -1442,14 +975,15 @@ async function start(){
     }else{
         alert("erm...no question is loaded")
     }
-};//start_Btn.addEventListener("click", start);
+}
 
 const pause = () =>{
     if(isruinning){
         if(isHoldActive){
             breakhold()
         }
-        console.log("pause stopped sand clock"); clearInterval(testint);
+        console.log("pause stopped sand clock"); 
+        clearInterval(testint);
         isruinning = false;
         loadTable()
         isCurrentlyPolling = false
@@ -1457,7 +991,7 @@ const pause = () =>{
     }else{
         alert("erm...gotta start the game before u pause it")
     }
-};//sscut_Btn.addEventListener("click", pause);
+}
 
 
 function breakhold(){
@@ -1466,7 +1000,7 @@ function breakhold(){
     clearInterval(holdInt)
     timer.innerHTML = lastSecondDisplayed
 }
-let currentHoldTime = 0
+
 function UpdateHoldTimer(){
     currentHoldTime--
     if(currentHoldTime == 0){
@@ -1670,39 +1204,9 @@ function updateStartAmts(newCash, newTime){
 
     timer.innerHTML = time;
     adjustTextToFillCon(timer, 70, false)
-    // let timerBasefontsize = 70
-    // timer.style.fontSize = timerBasefontsize + "px"
-    // console.log(timerBasefontsize)
-    // console.log("cashbox:" + timer.scrollWidth + " " + 
-    //     timer.clientWidth + " " + 
-    //     timer.style.fontSize)
-    // while (timer.scrollWidth > timer.clientWidth) {
-    //     console.log("cashbox:" + timer.scrollWidth + " " + 
-    //     timer.clientWidth + " " + 
-    //     timer.style.fontSize)
-    //     timer.style.fontSize = (timerBasefontsize--) + "px";
-    //     console.log("cashbox:" + timer.scrollWidth + " " + 
-    //     timer.clientWidth + " " + 
-    //     timer.style.fontSize)
-    // }
 
     cashBox.innerHTML = formatCash(cashAmt);
     adjustTextToFillCon(cashBox, 40, false)
-    // let cashBasefontsize = 41
-    // cashBox.style.fontSize = cashBasefontsize + "px"
-    // console.log(cashBasefontsize)
-    // console.log("cashbox:" + cashBox.scrollWidth + " " + 
-    //     cashBox.clientWidth + " " + 
-    //     cashBox.style.fontSize)
-    // while (cashBox.scrollWidth > cashBox.clientWidth) {
-    //     console.log("cashbox:" + cashBox.scrollWidth + " " + 
-    //     cashBox.clientWidth + " " + 
-    //     cashBox.style.fontSize)
-    //     cashBox.style.fontSize = (cashBasefontsize--) + "px";
-    //     console.log("cashbox:" + cashBox.scrollWidth + " " + 
-    //     cashBox.clientWidth + " " + 
-    //     cashBox.style.fontSize)
-    // }
 }
 
 
@@ -1735,38 +1239,6 @@ async function pollForNames(){
         listenForQuestion()
     }
     console.log("-=---------" + activePlayers)
-    // if(data.player1 != undefined){
-    //     player1Name.innerHTML = data.player1
-    //     let bgImageStr = "url(" + imgData.player1 +")"
-    //     console.log(bgImageStr)
-    //     player1Box.style.backgroundImage = bgImageStr
-    //     adjustTextToFillCon(player1Name, 40, false)
-    //     activePlayers.push(data.player1)
-    // }
-    // if(data.player2 != undefined){
-    //     player2Name.innerHTML = data.player2
-    //     let bgImageStr = "url(" + imgData.player2 +")"
-    //     console.log(bgImageStr)
-    //     player2Answer.style.backgroundImage = bgImageStr
-    //     adjustTextToFillCon(player2Name, 40, false)
-    //     activePlayers.push(data.player2)
-    // }
-    // if(data.player3 != undefined){
-    //     player3Name.innerHTML = data.player3
-    //     let bgImageStr = "url(" + imgData.player3 +")"
-    //     console.log(bgImageStr)
-    //     player3Answer.style.backgroundImage = bgImageStr
-    //     adjustTextToFillCon(player3Name, 40, false)
-    //     activePlayers.push(data.player3)
-    // }
-    // if(data.player4 != undefined){
-    //     player4Name.innerHTML = data.player4
-    //     let bgImageStr = "url(" + imgData.player4 +")"
-    //     console.log(bgImageStr)
-    //     player4Answer.style.backgroundImage = bgImageStr
-    //     adjustTextToFillCon(player4Name, 40, false)
-    //     activePlayers.push(data.player4)
-    // }
     
 };
 playerInterval = setInterval(pollForNames, 1000)
@@ -1944,7 +1416,6 @@ function revealCorrectAnswers(){
         alert("erm...cant do that")
     }
 }
-// revealAnswer.addEventListener("click", revealCorrectAnswers);
 
 function loadSelectedQuestion(){
     if(isQuestionSelected){
@@ -1955,7 +1426,6 @@ function loadSelectedQuestion(){
         alert("erm...no question is selected")
     }
 }
-// load.addEventListener("click", loadSelectedQuestion);
 
 function makeQuestionOrange(){
     prompt.style.border = "3px solid rgb(255, 255, 0)";
