@@ -1,0 +1,606 @@
+@font-face {
+    font-family: VegMeister;
+    src: url(fonts/VeggiBol.otf);
+  }
+  @font-face {
+    font-family: FixedBold;
+    src: url(fonts/FixedBold.ttf);
+  }
+  @font-face {
+    font-family: Bumber;
+    src: url(fonts/bumber.ttf);
+  }
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    display: flex;
+    justify-content: left;
+    min-height: 100px;
+    overflow: hidden;
+}
+.winningScreen{
+    width: 100svw;
+    height: 100svh;
+    display: none;
+    /* display: flex; */
+    justify-content: space-around;
+    background: linear-gradient(320deg, #eb92e4, #000000, #63c9b4);
+}
+.leaderBoard{
+    width: 66%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    /* background-color: rgb(0, 174, 255); */
+    
+}
+.LBPlayer{
+    width: 100%;
+    height: 20%;
+    opacity: 0;
+    /* background-color: rgb(0, 255, 64); */
+
+    display: flex;
+    justify-content: space-evenly;
+    font-size: 50px;
+    font-family: vegMeister;
+    color: black;
+    text-shadow: 1px 1px 0 #00f7ff,
+    -1px 1px 0 #00f7ff,
+    1px -1px 0 #00f7ff,
+    -1px -1px 0 #00f7ff,
+    0px 1px 0 #00f7ff,
+    0px -1px 0 #00f7ff,
+    -1px 0px 0 #00f7ff,
+    1px 0px 0 #00f7ff,
+    2px 2px 0 #00f7ff,
+    -2px 2px 0 #00f7ff,
+    2px -2px 0 #00f7ff,
+    -2px -2px 0 #00f7ff,
+    0px 2px 0 #00f7ff,
+    0px -2px 0 #00f7ff,
+    -2px 0px 0 #00f7ff,
+    2px 0px 0 #00f7ff,
+    1px 2px 0 #00f7ff,
+    -1px 2px 0 #00f7ff,
+    1px -2px 0 #00f7ff,
+    -1px -2px 0 #00f7ff,
+    2px 1px 0 #00f7ff,
+    -2px 1px 0 #00f7ff,
+    2px -1px 0 #00f7ff,
+    -2px -1px 0 #00f7ff;
+    
+    line-height: 300%;
+    
+}
+@keyframes revealLBPlayer {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 100;
+	}
+}
+.LBemoji{
+    transform: scale(1);
+	animation: pulse 1s infinite;
+}
+@keyframes pulse {
+	0% {
+		transform: scale(0.95);
+	}
+
+	50% {
+		transform: scale(1.2);
+	}
+
+	100% {
+		transform: scale(0.95);
+	}
+}
+.WinningPanel{
+    width: 10%;
+    height: 40%;
+    align-self: center;
+    visibility: hidden;
+    background-image: url(img/yayzog.gif);
+    background-position: -40px;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+}
+.wrapper{
+    width: 100svw;
+    height: 100svh;
+    display: flex;
+    /* display: none; */
+    overflow: hidden;
+    justify-content: left;
+    background: linear-gradient(320deg, #eb92e4, #000000, #63c9b4);
+}
+
+.answerBoxWrapper{
+    position: fixed;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    top: 400px;
+    width: 400px;
+    height: 400px;
+}
+.answerBox{
+    align-self: center;
+    justify-self: center;
+    background-color: rgb(0, 255, 242);
+    background-size: cover;
+    font-family: VegMeister;
+    border-radius: 15px;
+    border: 10px solid rgb(0, 0, 0);
+    width: 175px;
+    height: 175px;
+}
+.playerName{
+    height: 25%;
+    text-align: center;
+    font-size: 40px;
+}
+.playerAnswer{
+    height: 75%;
+    text-align: center;
+    font-size: 500%;
+    background-size: fill;
+    background-repeat: none;
+}
+.bank{
+    width: 400px;
+    height: 100px;
+    line-height: 75px;
+    background-image: linear-gradient(rgb(212, 0, 255), rgb(255, 0, 149));
+    /*background-color: aqua;*/
+    color: rgb(0, 0, 0);
+    text-align: center;
+    /* box-shadow: 20px 10px 100px gold; */
+    border: 10px solid rgb(0, 0, 0);
+    font-family: VegMeister;
+    font-size: 70px;
+}
+
+.timer{
+    height: 100px;
+    line-height: 75px;
+    width: 200px;
+    position: relative;
+    background: linear-gradient(rgb(0, 255, 255), rgb(119, 0, 255), rgb(255, 0, 255));
+    text-align: center;
+    font-size: 70px;
+    color:aqua;
+    text-shadow: 1px 1px 0 #000,
+    -1px 1px 0 #000,
+    1px -1px 0 #000,
+    -1px -1px 0 #000,
+    0px 1px 0 #000,
+    0px -1px 0 #000,
+    -1px 0px 0 #000,
+    1px 0px 0 #000,
+    2px 2px 0 #000,
+    -2px 2px 0 #000,
+    2px -2px 0 #000,
+    -2px -2px 0 #000,
+    0px 2px 0 #000,
+    0px -2px 0 #000,
+    -2px 0px 0 #000,
+    2px 0px 0 #000,
+    1px 2px 0 #000,
+    -1px 2px 0 #000,
+    1px -2px 0 #000,
+    -1px -2px 0 #000,
+    2px 1px 0 #000,
+    -2px 1px 0 #000,
+    2px -1px 0 #000,
+    -2px -1px 0 #000;
+    font-family: VegMeister;
+    border: 10px solid rgb(0, 0, 0);
+    left: 300px;
+}
+.holdAlert{
+    height: 100px;
+    width: 400px;
+    position: fixed;
+    background: linear-gradient(rgb(0, 255, 255), rgb(119, 0, 255), rgb(255, 0, 255));
+    text-align: center;
+    line-height: 70px;
+    font-size: 30px;
+    color:aqua;
+    text-shadow: 1px 1px 0 #000,
+    -1px 1px 0 #000,
+    1px -1px 0 #000,
+    -1px -1px 0 #000,
+    0px 1px 0 #000,
+    0px -1px 0 #000,
+    -1px 0px 0 #000,
+    1px 0px 0 #000,
+    2px 2px 0 #000,
+    -2px 2px 0 #000,
+    2px -2px 0 #000,
+    -2px -2px 0 #000,
+    0px 2px 0 #000,
+    0px -2px 0 #000,
+    -2px 0px 0 #000,
+    2px 0px 0 #000,
+    1px 2px 0 #000,
+    -1px 2px 0 #000,
+    1px -2px 0 #000,
+    -1px -2px 0 #000,
+    2px 1px 0 #000,
+    -2px 1px 0 #000,
+    2px -1px 0 #000,
+    -2px -1px 0 #000;
+    font-family: VegMeister;
+    border: 10px solid rgb(0, 0, 0);
+    left: 750px;
+    top:90px;
+    visibility: hidden;
+}
+.sand-clock{
+    width: 200px;
+    height: 610px;
+    position: relative;
+    top: 100px;
+    left: 1100px;
+    background-image: url(img/zog.gif);
+    background-position: -170px;
+    /*background-color: #292929;*/
+    border: 10px solid rgb(14, 14, 14);
+    border-radius: 5px;
+}
+.num-box{
+    height:50px;
+    line-height: 45px;
+    width: 200px;
+    text-align: left;
+    position: relative;
+    right:119px;
+    background-image: linear-gradient(rgb(255, 251, 1), rgb(255, 136, 0));
+    font-family: FixedBold;
+    font-size: 40px;
+    color: black;
+    border: 3px solid rgb(0, 0, 0)
+}
+.handle{
+    height: 10px;
+    width: 300px;
+    position: absolute;
+    top: -10px;
+    right: -1px;
+    background-color: #000000;
+}
+.bar{
+    width: 182px;
+    height: 592px;
+    position: absolute;
+    right: -1px;
+    top: -1px;
+    background-image: linear-gradient(rgb(0, 255, 234), blue);
+}
+
+.button-holder{
+    height: 800px;
+    width: 160px;
+    background:#aaaaaa;
+}
+.button{
+    height: 70px;
+    width: 70px;
+    border-radius: 20px;
+    background: rgba(0, 255, 234, .2);
+    box-sizing: 0;
+}
+.button:hover{
+    animation: flash 300ms;
+    background: rgba(153, 0, 255, 0.2);
+}
+@keyframes mymove {
+    0%   {background: red;}
+    25%  {background: orange;}
+    50%  {background: yellow;}
+    75%  {background: green;}
+    100% {background: blue;}
+}
+@keyframes flash {
+    0%   {background: rgba(0, 255, 234, .2);}
+    100% {background: rgba(153, 0, 255, 0.2);}
+}
+@keyframes moveleft {
+    0%   {left: -200px;opacity: 0;}
+    100%   {left: 175px;opacity: 1;}
+}
+@keyframes moveRight {
+    0%   {left: 175px;opacity: 1;}
+    100%   {left: -200px;opacity: 0;}
+}
+
+@keyframes moveWin {
+    /* height: 55px; width: 306px;  left: 102px; */
+    /* height: 90px; width: 465px; left: 18px; */
+    0%   {top: 22px;}
+    100%   { top: 91px;}
+}
+
+@keyframes moveLose {
+    0%   {top: 192px;}
+    100%   { top: 91px;}
+    /* 0%   {height: 55px; width: 306px; top: 192px; left: 102px;}
+    100%   {height: 90px; width: 465px; top: 91px; left: 18px;} */
+}
+.restartbutton{
+    height: 40px;
+    width: 40px;
+    position: absolute;
+    right: 60px;
+    top: 50px;
+}
+.showTable{
+    height: 40px;
+    width: 40px;
+    position: absolute;
+    right: 10px;
+    top : 50px;
+}
+.table{
+    height: 282px;
+    width: 500px;
+    left: -200px;
+    top: 125px;
+    justify-content: left;
+    position: absolute;
+    opacity: 0;
+    /* background-image: url(img/test.png); */
+    text-shadow: 1px 1px 0 #000,
+    -1px 1px 0 #000,
+    1px -1px 0 #000,
+    -1px -1px 0 #000,
+    0px 1px 0 #000,
+    0px -1px 0 #000,
+    -1px 0px 0 #000,
+    1px 0px 0 #000,
+    2px 2px 0 #000,
+    -2px 2px 0 #000,
+    2px -2px 0 #000,
+    -2px -2px 0 #000,
+    0px 2px 0 #000,
+    0px -2px 0 #000,
+    -2px 0px 0 #000,
+    2px 0px 0 #000,
+    1px 2px 0 #000,
+    -1px 2px 0 #000,
+    1px -2px 0 #000,
+    -1px -2px 0 #000,
+    2px 1px 0 #000,
+    -2px 1px 0 #000,
+    2px -1px 0 #000,
+    -2px -1px 0 #000;
+    background-size: 500px;
+    background-repeat: no-repeat;
+}
+
+
+.win{
+    height: 55px;
+    line-height: 45px;
+    width: 306px;
+    top: 22px;
+    left: 102px;
+
+    font-family: VegMeister;
+    font-size: 40px;
+    text-align: center;
+    text-shadow:inherit;
+    color: rgb(43, 255, 0);
+    position: absolute;
+
+    border: 3px solid rgb(255, 255, 255);
+    border-radius: 5px;
+    box-shadow: rgb(0, 255, 0) 0 0 15px 1px;
+}
+.total{
+    height: 90px;
+    line-Height: 80px;
+    width: 465px;
+    top: 91px;
+    left: 18px;
+
+    font-family: VegMeister;
+    font-size: 70px;
+    text-align: center;
+    text-shadow:inherit;
+    color: rgb(255, 255, 255);
+    position: absolute;
+
+    border: 3px solid rgb(255, 255, 255);
+    border-radius: 5px;
+    box-shadow: rgb(116, 239, 255) 0 0 15px 1px;
+}
+.lose{
+    height: 55px;
+    line-height: 45px;
+    width: 306px;
+    top: 192px;
+    left: 102px;
+    
+    font-family: VegMeister;
+    font-size: 40px;
+    text-align: center;
+    text-shadow:inherit;
+    color: rgb(255, 3, 3);
+    position: absolute;
+
+    border: 3px solid rgb(255, 255, 255);
+    border-radius: 5px;
+    box-shadow: rgb(255, 0, 0) 0 0 15px 1px;
+} 
+.tableCover{
+    height: 300px;
+    width: 300px;
+    left:-230px;
+    top:150px;
+    z-index: 9;
+    position: absolute;
+    background: inherit;
+}  
+.questionList{
+    width: 160px;
+    height: 400px;
+    white-space: pre;
+    text-overflow: ellipsis;
+    border-radius: 5px;
+    font-family: vegMeister;
+    font-size: 30px;
+    border: 3px solid rgb(25, 0, 255);
+    background: black;
+}
+.question{
+    height: 350px;
+    width: 750px;
+    left: 650px;
+    top: 800px;
+    position: absolute;
+}
+.prompt{
+    height: 100px;
+    width: 650px;
+    position: relative;
+    border-radius: 5px;
+    left: 50px;
+    transform: skewX(25deg);
+    border: 3px solid rgb(25, 0, 255);
+    background: black;
+}
+.aBox{
+    height: 70px;
+    width: 500px;
+    position: absolute;
+    left: 200px;
+    top: 120px;
+    transform: skewX(-25deg);
+    border: 3px solid rgb(25, 0, 255);
+    background: black;
+}
+.bBox{
+    height: 70px;
+    width: 500px;
+    position: absolute;
+    left: 200px;
+    top: 210px;
+    transform: skewX(-25deg);
+    border: 3px solid rgb(25, 0, 255);
+    background: black;
+}
+.cBox{
+    height: 70px;
+    width: 500px;
+    position: absolute;
+    left: 200px;
+    top:  300px;
+    transform: skewX(-25deg);
+    border: 3px solid rgb(25, 0, 255);
+    background: black;
+}
+.dBox{
+    height: 70px;
+    width: 500px;
+    position: absolute;
+    left: 200px;
+    top:  390px;
+    transform: skewX(-25deg);
+    border: 3px solid rgb(25, 0, 255);
+    background: black;
+    visibility: hidden;
+}
+.letterContainer{
+    height: 70px;
+    width: 70px;
+    position: relative;
+    left: -100px;
+    top: -3px;
+    border: inherit;
+    box-shadow: inherit;
+    background: black;
+}
+.letter{
+    transform: skewX(25deg);
+    font-family: vegMeister;
+    font-size: 55px;
+    text-align: center;
+}
+.QuestionConText{
+    transform: skewX(-25deg);
+    width: 620px;
+    height: 86px;
+    line-height: 43px;
+    font-family: vegMeister;
+    font-size: 40px;
+    padding-left: 25px;
+    text-align: left;	
+    color: white;	
+}
+.conText{
+    transform: skewX(25deg);
+    width: 460px;
+    height: 43px;
+    line-height: 43px;
+    top: -60px;
+    left: 20px;
+    position: relative;
+    font-family: vegMeister;
+    text-wrap: nowrap;
+    font-size: 40px;
+}
+.questionControlPanel{
+    width: 160px;
+    height: 1760px;
+    /* top:800px; */
+
+    background: rgb(25, 122, 122);
+}
+@keyframes correctAnswers {
+    0%   {left: 200px;border: 3px solid rgb(25, 0, 255); color: rgb(255, 255, 255);}
+    100% {left: 100px;border: 3px solid rgb(0, 255, 0); color: rgb(0, 255, 0);}
+}
+@keyframes moveUp {
+    0%   {top: 800px;}
+    100% {top: 300px;}
+}
+@keyframes moveDown {
+    0%   {top: 300px;}
+    100% {top: 800px;}
+}
+@keyframes AtoB {
+    0%   {top: 120px;}
+    100% {top: 210px;}
+}
+@keyframes AtoC {
+    0%   {top: 120px;}
+    100% {top: 300px;}
+}
+@keyframes BtoA {
+    0%   {top: 210px;}
+    100% {top: 120px;}
+}
+@keyframes BtoC {
+    0%   {top: 210px;}
+    100% {top: 300px;}
+}
+@keyframes CtoA {
+    0%   {top: 300px;}
+    100% {top: 120px;}
+}
+@keyframes CtoB {
+    0%   {top: 300px;}
+    100% {top: 210px;}
+}

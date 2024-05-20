@@ -1,0 +1,16 @@
+{"question":"Rank these empires in the order that they collapsed","a":"Mongolian Empire","b":"Han Dynasty","c":"Roman Empire","answerType":"order","answer":"bca","value":"20000","newTime":"60"}
+{"question":"what's 9 + 10?","a":"19","b":"20","c":"21","answerType":"single","answer":"c","value":"45000","newTime":"60"}
+{"question":"who speaks for the trees","a":"The Lorax","b":"Clifford","c":"Max","answerType":"single","answer":"a","value":"19000","newTime":"47"}
+{"question":"Dr. Seuss?","a":"red phish","b":"blue phish","c":"ourple phish","answerType":"double","answer":"ab","value":"37542","newTime":"100"}
+{"question":"In what year did the Berlin Wall fall?","a":"1984","b":"1991","c":"1989","answerType":"single","answer":"c","value":"4000","newTime":"50"}
+{"question":"What alcoholic beverage is made from juniper berries?","a":"aperol","b":"Gin","c":"absinthe","answerType":"single","answer":"b","value":"10000","newTime":"45"}
+{"question":"Rank these presidents in order by their start year","a":"William Howard Taft","b":"Benjamin Harrison","c":"Calvin Coolidge","answerType":"order","answer":"bac","value":"37500","newTime":"100"}
+{"question":"When Michael Jordan played for the Chicago Bulls, how many NBA Championships did he win?","a":"6","b":"4","c":"9","answerType":"single","answer":"a","value":"15000","newTime":"60"}
+{"question":"Rank these in order of domestic box office profits (a highest, c lowest)?","a":"Godzilla x Kong: The New Empire","b":"Dune: Part 2","c":"Kung Fu Panda 4","answerType":"order","answer":"bac","value":"30000","newTime":"60"}
+{"question":"Which two of these people won an oscar at the 2024 oscars?","a":"Robert Downey Jr.","b":"Da'Vine Joy Randolph","c":"Lily Gladstone","answerType":"double","answer":"ac","value":"45000","newTime":"60"}
+{"question":"Which two of these are real counter strike skins?","a":"Famas | Eye of Athena","b":"PP Bizon | Judgement of Anubis","c":"SG 553 | Spectral","answerType":"double","answer":"ab","value":"69696","newTime":"100"}
+{"question":"Which two of these are mammals?","a":"Manatee","b":"Turtle","c":"Narwhal","answerType":"double","answer":"ac","value":"70000","newTime":"100"}
+{"question":"this is a super long example question which also has really long answers to test question length","a":"guatamala sunburn skibidi","b":"hello erm... what the scalllllllllllllllllllerups","c":"1738 aye im like hey whats up hello ayo ayo ayo ayo ayo ayo","answerType":"single","answer":"b","value":"10","newTime":"5"}
+{"question":"testing with big moners","a":"woooomp","b":"scallop","c":"wizard","answerType":"order","answer":"abc","value":"10000000000","newTime":"60"}
+{"question":"testing with big timer","a":"woooomp","b":"scallop","c":"wizard","answerType":"order","answer":"abc","value":"10000000000","newTime":"60000"}
+{"question":"blahj","a":"blahj","b":"blahj","c":"blahj","answerType":"double","answer":"ab","value":"80","newTime":"1"}

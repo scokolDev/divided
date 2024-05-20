@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="style.css">
+        <title>Divided-Meister</title>
+    </head>
+    <body>
+        <audio id="trapQueen">
+            <source src="img/Feddy.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="Fard">
+            <source src="img/Fard.mp3" type="audio/mpeg">
+        </audio>
+
+        <div class="winningScreen" id="winningScreen">
+            <div class="WinningPanel" id="winningImg1">
+                
+            </div>
+            <div class="leaderBoard">
+                <div class="LBPlayer" id="LBPlayer1">
+                    <div class="LBemoji">
+                        👑
+                    </div>
+                    <div id="LBPlayer1Name">
+                        scokol
+                    </div>
+                    <div id="LBPlayer1Amount">
+                        $90,000
+                    </div>
+                    <div class="LBemoji">
+                        👑
+                    </div>
+                </div>
+                <div class="LBPlayer" id="LBPlayer2">
+                    <div class="LBemoji">
+                        🥈
+                    </div>
+                    <div id="LBPlayer2Name">
+                        player 2
+                    </div>
+                    <div id="LBPlayer2Amount">
+                        $45,000
+                    </div>
+                    <div class="LBemoji">
+                        🥈 
+                    </div>
+                </div>
+                <div class="LBPlayer" id="LBPlayer3">
+                    <div class="LBemoji">
+                        🥉
+                    </div>
+                    <div id="LBPlayer3Name">
+                        player 3
+                    </div>
+                    <div id="LBPlayer3Amount">
+                        $25,000
+                    </div>
+                    <div class="LBemoji">
+                        🥉
+                    </div>
+                </div>
+                <div class="LBPlayer" id="LBPlayer4">
+                    <div class="LBemoji">
+                        😭
+                    </div>
+                    <div id="LBPlayer4Name">
+                        player 4
+                    </div>
+                    <div id="LBPlayer4Amount">
+                        $0
+                    </div>
+                    <div class="LBemoji">
+                        😭
+                    </div>
+                </div>
+            </div>
+            <div class="WinningPanel" id="winningImg2">
+                
+            </div>
+        </div>
+        <div class="wrapper" id="wrapper">
+            <div class="question" id="quesionBox">
+                <div class="prompt" id="prompt"><div class="QuestionConText" id="QuestionConText"></div></div>
+                <div class="aBox" id="aBox"><div class="letterContainer"><div class="letter" id="A">A</div></div><div class="conText" id="aAnswer"></div></div>
+                <div class="bBox" id="bBox"><div class="letterContainer"><div class="letter" id="B">B</div></div><div class="conText" id="bAnswer"></div></div>
+                <div class="cBox" id="cBox"><div class="letterContainer"><div class="letter" id="C">C</div></div><div class="conText" id="cAnswer"></div></div>
+                <div class="dBox" id="dBox"><div class="letterContainer"><div class="letter" id="D">D</div> </div> <div class="conText" id="dAnswer"></div></div>
+            </div>
+            <div  class="table" id="table">
+                <div class="win" id="win"></div>
+                <div class="total" id="total"></div>
+                <div class="lose" id="lose"></div>
+            </div>
+            <div class="answerBoxWrapper">
+                <div class="answerBox" id="player1Box">
+                    <div class="playerName" id="player1Name">
+
+                    </div>
+                    <div class="playerAnswer" id="player1Answer">
+                        
+                    </div>
+                </div>
+                <div class="answerBox" id="player2Box">
+                    <div class="playerName" id="player2Name">
+
+                    </div>
+                    <div class="playerAnswer" id="player2Answer" style="background-size: cover;">
+                        
+                    </div>
+                </div>
+                <div class="answerBox" id="player3Box">
+                    <div class="playerName" id="player3Name">
+                        
+                    </div>
+                    <div class="playerAnswer" id="player3Answer">
+                        
+                    </div>
+                </div>
+                <div class="answerBox" id="player4Box">
+                    <div class="playerName" id="player4Name">
+
+                    </div>
+                    <div class="playerAnswer" id="player4Answer">
+                        
+                    </div>
+                </div>
+            </div>
+            <div  class="bank" id="bank"></div>
+            
+            <div class="timer" id="timer"></div>
+            <div class="holdAlert" id="holdAlert"></div>
+            <div class="sand-clock">
+                <div id="bar" class="bar" ></div>
+                <div id="handle" class="handle"></div>
+                <div id="num-box" class="num-box"></div>
+            </div>
+        </div>
+        
+        <!-- <div id="button-holder" class="button-holder">
+            <button id="start" class="button" class="startbutton">start</button>
+            <button id="cut" class="button">pause</button>
+            <button id="hold" class="button">HOLD</button>
+            <button id="showTable" class="button">load Table</button>
+            <button id="hideTable" class="button">hide Table</button>
+            <button id="stage-1" class="button">Stage 1</button>
+            <button id="stage-2" class="button">Stage 2</button>
+            <button id="stage-3" class="button">Stage 3</button>
+            <button id="stage-4" class="button">Stage 4</button>
+            <button id="yuh" class="button">yuh</button>
+            <button id="nah" class="button">nah</button>
+            <button id="load" class="button">load Question</button> 
+            <select id="questionList" class="questionList"></select> 
+            <button id="revealAnswer" class="button">Reveal Answer</button> 
+            <button id="hideQuestion" class="button">hide Question</button> 
+            <button id="takeover" class="button" >takeover</button> 
+
+            <button id="loadNames" class="button">load player names</button>
+            <button id="resetServer" class="button">reset server</button>
+        </div> -->
+        <script src="index.js"></script>
+    </body>
+</html>
