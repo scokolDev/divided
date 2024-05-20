@@ -74,8 +74,8 @@ client.login(token);
 
 const testingInt = setInterval(function(){
     try{
-        console.log(players[0].PID)
-        console.log(new Date(audio.users.get(players[0].PID)))
+        //console.log(players[0].PID)
+        //console.log(new Date(audio.users.get(players[0].PID)))
         players[0].isSpeaking = (audio.users.get(players[0].PID) ? true : false)
         players[1].isSpeaking = (audio.users.get(players[1].PID) ? true : false)
         players[2].isSpeaking = (audio.users.get(players[2].PID) ? true : false)
@@ -198,7 +198,10 @@ app.get('/fullReset', (req, res) => {
 })
 app.get('/answerReset', (req, res) => {
     console.log("pluh")
-    playerAnswers = []
+    players[0].answer = undefined
+    players[1].answer = undefined
+    players[2].answer = undefined
+    players[3].answer = undefined
     res.sendStatus(200)
 })
 
@@ -316,7 +319,12 @@ ws.on('message', function incoming(data){
     console.log(t)
     switch(t){
         case 'MESSAGE_CREATE':  
-            
+            console.log("player1: " + players[0].name + " - " +
+            "player2: " + players[1].name + " - " +
+            "player3: " + players[2].name + " - " +
+            "player4: " + players[3].name
+
+            )
             let author = d.author.username
             let content = d.content
             if(numOfPlayers < 4 && !playerMap.has(d.author.id)){

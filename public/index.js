@@ -1,15 +1,19 @@
 const baseURL = 'http://localhost:3000/'
 
+var dynamicStyle = document.createElement('style');
+document.getElementsByTagName('head')[0].appendChild(dynamicStyle);
+
 let Feddy = document.getElementById("trapQueen")
 let Fard = document.getElementById("Fard")
+
 let kickedPlayer = undefined
-let _MAX_PLAYERS = 1
+let _MAX_PLAYERS = 4
 let numOfPlayers = 4
 let consensusAnswer = undefined
 let takeoverCounter = 2
 let initHoldTime = 10
 let cashAmt = 5000; //starting cashAmt
-let bankAmt = 1000000000000;
+let bankAmt = 0;
 let potentialWin = 0
 let potentialLose = 0
 let barStartTime;
@@ -130,7 +134,7 @@ const speakingInt = setInterval(async function(){
     const res = await fetch(baseURL + "speaking")
     const data = await res.json()
 
-    console.log(data.player1)
+    // console.log(data.player1)
     if(data.player1 == true){
         player1Box.style.border = "10px solid rgb(0, 255, 0)"
     }else{
@@ -948,6 +952,7 @@ function takeover(player){
         takeoverCounter--
         
         let takeoverAnswer = playerAnswerElements[player-1].innerHTML
+        console.log("takeoverAnswer:============" + takeoverAnswer)
         consensusAnswer = takeoverAnswer
 
         for(j = 0; j < playerAnswerElements.length; j++){
@@ -1720,6 +1725,7 @@ async function pollForNames(){
             let bgImageStr = "url(" + avatars[i] +")"
             playerBoxElements[i].style.backgroundImage = bgImageStr
             adjustTextToFillCon(playerNameElements[i], 40, false)
+            console.log(i + ":  " + playerNameElements[i].style.fontSize)
             activePlayers.push(names[i])
         }
     }
@@ -1833,11 +1839,35 @@ function rightAnswerCSS(){
     win.style.top = "91px"
     win.style.left = "18px"
     win.style.width =  "465px" 
-    adjustTextToFillCon(win, 70, false)
+    let oldFont = win.style.fontSize
+    let newFont = adjustTextToFillCon(win, 70, false)
+    win.style.fontSize = oldFont
+    var keyFrames = '\
+        @keyframes moveWin {\
+            0% {\
+                top:  22px;\
+                height: 55px;\
+                line-height: 45px;\
+                width: 306px;\
+                font-size: ' + oldFont + ';\
+                left: 102px;\
+            }\
+            100% {\
+                top: 91px;\
+                height: 90px;\
+                line-height: 80px;\
+                width: 465px;\
+                font-size: ' + newFont + 'px;\
+                left: 18px;\
+            }\
+        }\
+    '
+    console.log("keyFrames: " + keyFrames)
+    dynamicStyle.innerHTML = keyFrames
     // setTimeout(function(){win.style.animation = "moveWin 1s";},1000)
     
     win.style.animation = "moveWin 1s";
-    
+    win.style.fontSize = newFont + "px"
     
     
     gameWrapper.style.background = "linear-gradient(320deg, #00ff00, #000000, #00ff00)"
@@ -1852,12 +1882,37 @@ function wrongAnswerCSS(){
     win.style.visibility = "hidden"
     lose.style.height = "90px" 
     lose.style.lineHeight = "80px"
-
     lose.style.width =  "465px" 
     lose.style.top = "91px"
     lose.style.left = "18px"
-    adjustTextToFillCon(lose, 70, false)
+    let oldFont = lose.style.fontSize
+    let newFont = adjustTextToFillCon(lose, 70, false)
+    lose.style.fontSize = oldFont
+    var keyFrames = '\
+        @keyframes moveLose {\
+            0% {\
+                top:  192px;\
+                height: 55px;\
+                line-height: 45px;\
+                width: 306px;\
+                font-size: ' + oldFont + ';\
+                left: 102px;\
+            }\
+            100% {\
+                top: 91px;\
+                height: 90px;\
+                line-height: 80px;\
+                width: 465px;\
+                font-size: ' + newFont + 'px;\
+                left: 18px;\
+            }\
+        }\
+    '
+    console.log("keyFrames: " + keyFrames)
+    dynamicStyle.innerHTML = keyFrames
+    
     lose.style.animation = "moveLose 1s";
+    lose.style.fontSize = newFont + "px"
     
     
     gameWrapper.style.background = "linear-gradient(320deg, #ff0000, #000000, #ff0000)"
