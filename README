@@ -1,0 +1,4 @@
+.env
+  TOKEN = discord bot token
+  DIS_SERVER_ID = discord server id of server bot will be in
+  DIS_CHANNEL_ID = discord voice channel id that bot will join and monitor
