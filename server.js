@@ -23,7 +23,19 @@ console.log(__dirname)
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+let defaultPfps = []
+fs.readdir(__dirname + "/public/img/pfps", function(err, files){
+    for(let i=0; i<files.length; i++){
+        defaultPfps.push("/img/pfps/" + files[i])
+    }
+})
 
+let endMusicFiles = []
+fs.readdir(__dirname + "/public/music", function(err, files){
+    for(let i=0; i<files.length; i++){
+        endMusicFiles.push(files[i])
+    }
+})
 
 let players = []
 const playerMap = new Map();
@@ -137,6 +149,13 @@ app.get('/clearQSelection', (req, res) => {
     res.sendStatus(200)
 })
 
+app.get('/endsong', (req, res) => {
+    let numOfSongs = endMusicFiles.length
+
+    let randomIndex = Math.floor(Math.random() * numOfSongs)
+
+    res.status(200).json(endMusicFiles[randomIndex])
+})
 
 app.get('/create', (req, res) => {
     res.redirect("create.html")
@@ -333,6 +352,10 @@ ws.on('message', function incoming(data){
                 let PlayerAvatarPath = null
                 if(d.author.avatar != null){
                     PlayerAvatarPath = "https://cdn.discordapp.com/avatars/" + d.author.id + '/' + d.author.avatar
+                }else{
+                    let randomPfpIdx = Math.floor(Math.random() * defaultPfps.length)
+                    PlayerAvatarPath = defaultPfps[randomPfpIdx]
+                    defaultPfps.splice(randomPfpIdx, 1)
                 }
                 addPlayer(pNumber, author, d.author.global_name, d.author.id, PlayerAvatarPath)
 

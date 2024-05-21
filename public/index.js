@@ -3,8 +3,11 @@ const baseURL = 'http://localhost:3000/'
 var dynamicStyle = document.createElement('style');
 document.getElementsByTagName('head')[0].appendChild(dynamicStyle);
 
+
+
 let Feddy = document.getElementById("trapQueen")
 let Fard = document.getElementById("Fard")
+let endAudio = undefined
 
 let kickedPlayer = undefined
 let _MAX_PLAYERS = 1
@@ -142,7 +145,7 @@ const player4Answer = document.getElementById("player4Answer");
 const playerAnswerElements = [player1Answer, player2Answer, player3Answer, player4Answer]
 
 function revealLeaderBoard(){
-    Feddy.play()
+    endAudio.play()
 
     setTimeout(function(){
         Fard.play()
@@ -201,6 +204,18 @@ function revealLeaderBoard(){
 }
 
 
+async function importRandSong(){
+    let endMusicRes = await fetch(baseURL + "endsong")
+    let endMusicFileName = await endMusicRes.json()
+
+    endAudio = document.createElement('audio');
+    audioSource = document.createElement('source');
+    audioSource.setAttribute("type", "audio/mpeg")
+    audioSource.setAttribute("src", "/music/" + endMusicFileName)
+    endAudio.append(audioSource)
+    document.getElementsByTagName('body')[0].appendChild(endAudio); 
+}
+importRandSong()
 
 const speakingInt = setInterval(async function(){
     const res = await fetch(baseURL + "speaking")
@@ -470,7 +485,7 @@ const formatCash = (money) =>{
     return buffer;
 }
 // cashBox.innerHTML = formatCash(cashAmt);
-// bank.innerHTML = formatCash(bankAmt);
+bank.innerHTML = formatCash(bankAmt);
 // adjustTextToFillCon(bank, 70, false)
 // timer.innerHTML = time;
 
