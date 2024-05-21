@@ -91,5 +91,5 @@ document.getElementById("submit").addEventListener('click', async function(){
       });
 
     const data = await res.json()
-    alert("http://localhost:3000/selectQuestion/" + data.questionIndex)
+    alert("http://localhost:3000/selectQuestion/" + data)
 })

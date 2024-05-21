@@ -15,3 +15,11 @@
 {"question":"testing with big timer","a":"woooomp","b":"scallop","c":"wizard","answerType":"order","answer":"abc","value":"10000000000","newTime":"60000"}
 {"question":"blahj","a":"blahj","b":"blahj","c":"blahj","answerType":"double","answer":"ab","value":"80","newTime":"1"}
 {"question":"this is a testing question","a":"vine boom","b":"squidwards house","c":"moai emoji","answerType":"double","answer":"ab","value":"10000","newTime":"90"}
+{"question":"testing","a":"womp","b":"waffle","c":"stomp","answerType":"single","answer":"c","value":"5","newTime":"5"}
+{"question":"a","a":"ss","b":"ssss","c":"sssssss","answerType":"double","answer":"ab","value":"12","newTime":"13"}
+{"question":"a","a":"ss","b":"ssss","c":"sssssss","answerType":"double","answer":"ab","value":"12","newTime":"13"}
+{"question":"a","a":"ss","b":"ssss","c":"sssssss","answerType":"double","answer":"ab","value":"12","newTime":"13"}
+{"question":"testing","a":"dddd","b":"d","c":"sddddd","answerType":"order","answer":"abc","value":"12","newTime":"13"}
+{"question":"wompuz","a":"wompuz","b":"wompuz","c":"wompuz","answerType":"double","answer":"ab","value":"4","newTime":"6"}
+{"question":"gaming","a":"gaming","b":"gaming","c":"gaming","answerType":"single","answer":"a","value":"53","newTime":"53"}
+{"question":"feddy wapp be like im like hey whassup ","a":"hello","b":"hey","c":"hi","answerType":"single","answer":"a","value":"53","newTime":"53"}

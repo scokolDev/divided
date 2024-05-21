@@ -10,7 +10,7 @@ document.getElementsByTagName('head')[0].appendChild(dynamicStyle);
 let endAudio = undefined
 
 let kickedPlayer = undefined
-let _MAX_PLAYERS = 4
+let _MAX_PLAYERS = 1
 let consensusAnswer = undefined
 let takeoverCounter = 2 //number of takeovers per game
 const initHoldTime = 10 //length of a timeout during kick round

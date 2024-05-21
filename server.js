@@ -159,7 +159,7 @@ app.get('/endsong', (req, res) => {
 
 app.get('/create', (req, res) => {
     res.redirect("create.html")
-    res.sendStatus(200)
+    res.status(200)
 })
 
 
@@ -181,13 +181,12 @@ app.post("/question", (req, res) => {
     const isExistingQuestions = fs.readFileSync(__dirname + '/questions.txt', 'utf8') != "";
 
     const questionToAdd = isExistingQuestions ? ("\n" + JSON.stringify(req.body)) : JSON.stringify(req.body)
-    fs.appendFile(__dirname + '/questions.txt', questionToAdd, err => {
-        if (err) {
-          console.error(err);
-        }
+    fs.appendFileSync(__dirname + '/questions.txt', questionToAdd, err => {
+          console.error(err || "written");
       });
     loadQuesions()
-    res.status(200).json({questionIndex: (allQuestions.length - 1)})
+    //console.log("after adding question" + allQuestions)
+    res.status(200).json((allQuestions.length - 1))
 })
 
 
