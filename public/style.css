@@ -130,9 +130,9 @@ body{
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
-    top: 400px;
-    width: 400px;
-    height: 400px;
+    top: 500px;
+    width: 600px;
+    height: 580px;
 }
 .answerBox{
     align-self: center;
@@ -142,19 +142,76 @@ body{
     font-family: VegMeister;
     border-radius: 15px;
     border: 10px solid rgb(0, 0, 0);
-    width: 175px;
-    height: 175px;
+    width: 250px;
+    height: 250px;
 }
 .playerName{
-    height: 25%;
+    height: 65px;
+    width: 220px;
+    position: relative;
+    left: 5px;
+    line-height: 65px;
     text-align: center;
-    font-size: 40px;
+    font-size: 50px;
+    color: aqua;
+    opacity: 1;
+    text-shadow: 1px 1px 0 #000,
+    -1px 1px 0 #000,
+    1px -1px 0 #000,
+    -1px -1px 0 #000,
+    0px 1px 0 #000,
+    0px -1px 0 #000,
+    -1px 0px 0 #000,
+    1px 0px 0 #000,
+    2px 2px 0 #000,
+    -2px 2px 0 #000,
+    2px -2px 0 #000,
+    -2px -2px 0 #000,
+    0px 2px 0 #000,
+    0px -2px 0 #000,
+    -2px 0px 0 #000,
+    2px 0px 0 #000,
+    1px 2px 0 #000,
+    -1px 2px 0 #000,
+    1px -2px 0 #000,
+    -1px -2px 0 #000,
+    2px 1px 0 #000,
+    -2px 1px 0 #000,
+    2px -1px 0 #000,
+    -2px -1px 0 #000;
     text-wrap: nowrap;
 }
 .playerAnswer{
-    height: 75%;
+    height: 165px;
+    line-height: 135px;
     text-align: center;
-    font-size: 500%;
+    font-size: 100px;
+    opacity: 1;
+    color: aqua;
+    text-shadow: 1px 1px 0 #000,
+    -1px 1px 0 #000,
+    1px -1px 0 #000,
+    -1px -1px 0 #000,
+    0px 1px 0 #000,
+    0px -1px 0 #000,
+    -1px 0px 0 #000,
+    1px 0px 0 #000,
+    2px 2px 0 #000,
+    -2px 2px 0 #000,
+    2px -2px 0 #000,
+    -2px -2px 0 #000,
+    0px 2px 0 #000,
+    0px -2px 0 #000,
+    -2px 0px 0 #000,
+    2px 0px 0 #000,
+    1px 2px 0 #000,
+    -1px 2px 0 #000,
+    1px -2px 0 #000,
+    -1px -2px 0 #000,
+    2px 1px 0 #000,
+    -2px 1px 0 #000,
+    2px -1px 0 #000,
+    -2px -1px 0 #000;
     background-size: fill;
     background-repeat: none;
 }
@@ -162,6 +219,9 @@ body{
     width: 400px;
     height: 100px;
     line-height: 75px;
+    position: relative;
+    left: 10px;
+    top: 10px;
     background-image: linear-gradient(rgb(212, 0, 255), rgb(255, 0, 149));
     /*background-color: aqua;*/
     color: rgb(0, 0, 0);
@@ -176,7 +236,7 @@ body{
     height: 100px;
     line-height: 75px;
     width: 200px;
-    position: relative;
+    position: absolute;
     background: linear-gradient(rgb(0, 255, 255), rgb(119, 0, 255), rgb(255, 0, 255));
     text-align: center;
     font-size: 70px;
@@ -207,7 +267,8 @@ body{
     -2px -1px 0 #000;
     font-family: VegMeister;
     border: 10px solid rgb(0, 0, 0);
-    left: 300px;
+    left: 860px;
+    top: 10px;
 }
 .holdAlert{
     height: 100px;
@@ -244,16 +305,16 @@ body{
     -2px -1px 0 #000;
     font-family: VegMeister;
     border: 10px solid rgb(0, 0, 0);
-    left: 750px;
-    top:90px;
+    left: 760px;
+    top:100px;
     visibility: hidden;
 }
 .sand-clock{
     width: 200px;
     height: 610px;
-    position: relative;
-    top: 100px;
-    left: 1100px;
+    position: absolute;
+    top: 300px;
+    left: 1650px;
     background-image: url(img/zog.gif);
     background-position: -170px;
     /*background-color: #292929;*/
@@ -268,7 +329,7 @@ body{
     position: relative;
     right:119px;
     background-image: linear-gradient(rgb(255, 251, 1), rgb(255, 136, 0));
-    font-family: FixedBold;
+    font-family: FixedBold; 
     font-size: 40px;
     color: black;
     border: 3px solid rgb(0, 0, 0)
@@ -472,7 +533,7 @@ body{
     height: 350px;
     width: 750px;
     left: 650px;
-    top: 800px;
+    top: 1080px;
     position: absolute;
 }
 .prompt{
@@ -578,7 +639,7 @@ body{
 }
 @keyframes moveUp {
     0%   {top: 800px;}
-    100% {top: 300px;}
+    100% {top: 400px;}
 }
 @keyframes moveDown {
     0%   {top: 300px;}

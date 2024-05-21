@@ -7,7 +7,7 @@ let Feddy = document.getElementById("trapQueen")
 let Fard = document.getElementById("Fard")
 
 let kickedPlayer = undefined
-let _MAX_PLAYERS = 4
+let _MAX_PLAYERS = 1
 let consensusAnswer = undefined
 let takeoverCounter = 2 //number of takeovers per game
 const initHoldTime = 10 //length of a timeout during kick round
@@ -22,8 +22,6 @@ let isCurrentlyPolling = false;
 let potentialWin = 0
 let potentialLose = 0
 let cashStartTime;
-// let barStartTime;
-// let timeStartTime;
 
 let currentHoldTime = 0
 let isruinning = false;
@@ -32,8 +30,7 @@ let isFail = false
 let isKickRound = false
 let isFinalRound = false
 let isHoldActive = false
-// let rate = 167;
-// let sub = cashAmt/1200;
+
 let playerInterval
 let lastTickTime = undefined
 let pausedTime = 0
@@ -87,6 +84,62 @@ const ALetter = document.getElementById("A");
 const BLetter = document.getElementById("B");
 const CLetter = document.getElementById("C");
 const DLetter = document.getElementById("D");
+
+let currentQuestion = undefined
+let isQuestionLoaded = false
+let initialAmt = cashAmt
+let initialTime = time
+
+const QuestionConText = document.getElementById("QuestionConText");
+const timer = document.getElementById("timer");
+const holdAlert = document.getElementById("holdAlert")
+const bank = document.getElementById("bank");
+
+//sand clock
+const bar = document.getElementById("bar");
+let initHeight = bar.offsetHeight;
+const handle = document.getElementById("handle");
+const cashBox = document.getElementById("num-box");
+
+
+//table elements
+const win = document.getElementById("win");
+const total = document.getElementById("total");
+const lose = document.getElementById("lose");
+let isTableDisplayed = false
+
+//question answers
+const aBox = document.getElementById("aBox");
+const bBox = document.getElementById("bBox");
+const cBox = document.getElementById("cBox");
+const dBox = document.getElementById("dBox");
+
+//answer box elements
+const player1Box = document.getElementById("player1Box");
+const player2Box = document.getElementById("player2Box");
+const player3Box = document.getElementById("player3Box");
+const player4Box = document.getElementById("player4Box");
+const playerBoxElements = [player1Box, player2Box, player3Box, player4Box]
+
+const player1Film = document.getElementById("player1Film");
+const player2Film = document.getElementById("player2Film");
+const player3Film = document.getElementById("player3Film");
+const player4Film = document.getElementById("player4Film");
+const playerFilmElements = [player1Film, player2Film, player3Film, player4Film]
+
+const player1Name = document.getElementById("player1Name");
+const player2Name = document.getElementById("player2Name");
+const player3Name = document.getElementById("player3Name");
+const player4Name = document.getElementById("player4Name");
+const playerNameElements = [player1Name, player2Name, player3Name, player4Name]
+
+
+
+const player1Answer = document.getElementById("player1Answer");
+const player2Answer = document.getElementById("player2Answer");
+const player3Answer = document.getElementById("player3Answer");
+const player4Answer = document.getElementById("player4Answer");
+const playerAnswerElements = [player1Answer, player2Answer, player3Answer, player4Answer]
 
 function revealLeaderBoard(){
     Feddy.play()
@@ -145,10 +198,6 @@ function revealLeaderBoard(){
         LBPlayer1.style.opacity = "1"
     }, 4500)
     
-    
-    
-    
-    
 }
 
 
@@ -157,7 +206,6 @@ const speakingInt = setInterval(async function(){
     const res = await fetch(baseURL + "speaking")
     const data = await res.json()
 
-    // console.log(data.player1)
     if(data.player1 == true){
         player1Box.style.border = "10px solid rgb(0, 255, 0)"
     }else{
@@ -377,53 +425,7 @@ async function selectQuestion(QuestionObj){
 
 
 
-let currentQuestion = undefined
-let isQuestionLoaded = false
-let initialAmt = cashAmt
-let initialTime = time
 
-const QuestionConText = document.getElementById("QuestionConText");
-const timer = document.getElementById("timer");
-const holdAlert = document.getElementById("holdAlert")
-const bank = document.getElementById("bank");
-
-//sand clock
-const bar = document.getElementById("bar");
-let initHeight = bar.offsetHeight;
-const handle = document.getElementById("handle");
-const cashBox = document.getElementById("num-box");
-
-
-//table elements
-const win = document.getElementById("win");
-const total = document.getElementById("total");
-const lose = document.getElementById("lose");
-let isTableDisplayed = false
-
-//question answers
-const aBox = document.getElementById("aBox");
-const bBox = document.getElementById("bBox");
-const cBox = document.getElementById("cBox");
-const dBox = document.getElementById("dBox");
-
-//answer box elements
-const player1Name = document.getElementById("player1Name");
-const player2Name = document.getElementById("player2Name");
-const player3Name = document.getElementById("player3Name");
-const player4Name = document.getElementById("player4Name");
-const playerNameElements = [player1Name, player2Name, player3Name, player4Name]
-
-const player1Box = document.getElementById("player1Box");
-const player2Box = document.getElementById("player2Box");
-const player3Box = document.getElementById("player3Box");
-const player4Box = document.getElementById("player4Box");
-const playerBoxElements = [player1Box, player2Box, player3Box, player4Box]
-
-const player1Answer = document.getElementById("player1Answer");
-const player2Answer = document.getElementById("player2Answer");
-const player3Answer = document.getElementById("player3Answer");
-const player4Answer = document.getElementById("player4Answer");
-const playerAnswerElements = [player1Answer, player2Answer, player3Answer, player4Answer]
 
 function adjustTextToFillCon(container, initialFontSize, isVertical){
     let basefontsize = initialFontSize
@@ -467,11 +469,10 @@ const formatCash = (money) =>{
     
     return buffer;
 }
-cashBox.innerHTML = formatCash(cashAmt);
-bank.innerHTML = formatCash(bankAmt);
-adjustTextToFillCon(bank, 70, false)
-timer.innerHTML = time;
-
+// cashBox.innerHTML = formatCash(cashAmt);
+// bank.innerHTML = formatCash(bankAmt);
+// adjustTextToFillCon(bank, 70, false)
+// timer.innerHTML = time;
 
 const drainBar = (modifier) =>{
     let space = parseInt((initHeight)*(1-modifier));
@@ -479,12 +480,6 @@ const drainBar = (modifier) =>{
     bar.style.top = initHeight-space + "px";
     handle.style.top = (initHeight-space)-10 + "px";
     cashBox.style.top = initHeight-space + "px";
-    // console.log(
-    //     "bar: " + bar.offsetTop + 
-    //     "\nhandle: " + handle.offsetTop +
-    //     "\ncashBox: " + cashBox.offsetTop +
-    //     "\nbar: " + bar.offsetHeight
-    // )
 }
 const updateCash = (modifier) =>{
     //console.log(1-modifier)
@@ -582,10 +577,10 @@ function takeover(player){
         console.log("takeoverAnswer:============" + takeoverAnswer)
         consensusAnswer = takeoverAnswer
 
-        for(j = 0; j < playerAnswerElements.length; j++){
+        for(let j = 0; j < 4; j++){
             playerAnswerElements[j].innerHTML = takeoverAnswer.toUpperCase()
-            playerAnswerElements[j].style.backgroundColor = "orange"
-            playerNameElements[j].style.backgroundColor = "orange"
+            playerFilmElements[j].style.backgroundColor = "orange"
+            // playerNameElements[j].style.backgroundColor = "orange"
         }
         //playerBoxElements[player-1].style.border = "10px solid rgb(255, 0, 0)"
         playerAnswerElements[player-1].innerHTML = "🙋‍♂️"
@@ -1136,8 +1131,7 @@ const hideTable = () =>{
 }
 function resetAnswerDisplay(){
     for(i = 0; i < playerAnswerElements.length; i++){
-        playerAnswerElements[i].style.backgroundColor = ""//"rgb(0, 255, 242)"
-        playerNameElements[i].style.backgroundColor = ""//"rgb(0, 255, 242)"
+        playerFilmElements[i].style.backgroundColor = ""//"rgb(0, 255, 242)"
         playerAnswerElements[i].innerHTML = ""
     }
 }
@@ -1182,7 +1176,7 @@ function resetQuestionCSS(){
     cAnswer.style.fontFamily = "VegMeister";
 
     dBox.style.visibility = "hidden"
-    quesionBox.style.top = "800px";
+    quesionBox.style.top = "1080px";
     quesionBox.style.animation = "";
 }
 function fullBoardReset(){
@@ -1228,7 +1222,7 @@ async function pollForNames(){
             playerNameElements[i].innerHTML = names[i]
             let bgImageStr = "url(" + avatars[i] +")"
             playerBoxElements[i].style.backgroundImage = bgImageStr
-            adjustTextToFillCon(playerNameElements[i], 40, false)
+            adjustTextToFillCon(playerNameElements[i], 55, false)
             console.log(i + ":  " + playerNameElements[i].style.fontSize)
             activePlayers.push(names[i])
         }
@@ -1300,9 +1294,9 @@ function revealOrderAnswers(first, second, third){
 }
 function rightAnswerCSS(){
     for(i = 0; i < playerBoxElements.length; i++){
-        playerBoxElements[i].style.backgroundColor = "green"
-        playerAnswerElements[i].style.backgroundColor = "green"
-        playerNameElements[i].style.backgroundColor = "green"
+        playerFilmElements[i].style.backgroundColor = "green"
+        // playerAnswerElements[i].style.backgroundColor = "green"
+        // playerNameElements[i].style.backgroundColor = "green"
     }
     total.style.visibility = "hidden"
     lose.style.visibility = "hidden"
@@ -1346,9 +1340,9 @@ function rightAnswerCSS(){
 }
 function wrongAnswerCSS(){
     for(i = 0; i < playerBoxElements.length; i++){
-        playerBoxElements[i].style.backgroundColor = "red"
-        playerAnswerElements[i].style.backgroundColor = "red"
-        playerNameElements[i].style.backgroundColor = "red"
+        playerFilmElements[i].style.backgroundColor = "red"
+        // playerAnswerElements[i].style.backgroundColor = "red"
+        // playerNameElements[i].style.backgroundColor = "red"
     }
     total.style.visibility = "hidden"
     win.style.visibility = "hidden"
@@ -1399,10 +1393,10 @@ function revealCorrectAnswers(){
             revealOrderAnswers(currentQuestion.answer[0], currentQuestion.answer[1], currentQuestion.answer[2]);
         }
         if(consensusAnswer != undefined && currentQuestion.answer.toLowerCase() == consensusAnswer.toLowerCase() && !isFail){
+            bankAmt = potentialWin
             bank.innerHTML = win.innerHTML;
             adjustTextToFillCon(bank, 70, false)
 
-            bankAmt = potentialWin
             rightAnswerCSS()
         }else{
             bankAmt = potentialLose
@@ -1420,7 +1414,7 @@ function revealCorrectAnswers(){
 function loadSelectedQuestion(){
     if(isQuestionSelected){
         quesionBox.style.animation = "moveUp 1s";
-        quesionBox.style.top = "300px";
+        quesionBox.style.top = "400px";
         isQuestionLoaded = true
     }else{
         alert("erm...no question is selected")
