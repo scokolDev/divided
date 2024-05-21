@@ -63,6 +63,7 @@ let interval = 0
 let token = process.env.TOKEN
 let discordServerID = process.env.DIS_SERVER_ID
 let discordChannelID = process.env.DIS_CHANNEL_ID
+let discordAnswerChannelID = process.env.DIS_TEXT_CHANNEL_ID
 
 client.once('ready', () => {
     myGuild = client.guilds.cache.get(discordServerID)
@@ -343,25 +344,28 @@ ws.on('message', function incoming(data){
             "player4: " + players[3].name
 
             )
-            let author = d.author.username
-            let content = d.content
-            if(numOfPlayers < 4 && !playerMap.has(d.author.id)){
-                numOfPlayers++
-                let pNumber = numOfPlayers
-                let PlayerAvatarPath = null
-                if(d.author.avatar != null){
-                    PlayerAvatarPath = "https://cdn.discordapp.com/avatars/" + d.author.id + '/' + d.author.avatar
-                }else{
-                    let randomPfpIdx = Math.floor(Math.random() * defaultPfps.length)
-                    PlayerAvatarPath = defaultPfps[randomPfpIdx]
-                    defaultPfps.splice(randomPfpIdx, 1)
-                }
-                addPlayer(pNumber, author, d.author.global_name, d.author.id, PlayerAvatarPath)
+            console.log(d)
+            if(d.channel_id == discordAnswerChannelID){
+                let author = d.author.username
+                let content = d.content
+                if(numOfPlayers < 4 && !playerMap.has(d.author.id)){
+                    numOfPlayers++
+                    let pNumber = numOfPlayers
+                    let PlayerAvatarPath = null
+                    if(d.author.avatar != null){
+                        PlayerAvatarPath = "https://cdn.discordapp.com/avatars/" + d.author.id + '/' + d.author.avatar
+                    }else{
+                        let randomPfpIdx = Math.floor(Math.random() * defaultPfps.length)
+                        PlayerAvatarPath = defaultPfps[randomPfpIdx]
+                        defaultPfps.splice(randomPfpIdx, 1)
+                    }
+                    addPlayer(pNumber, author, d.author.global_name, d.author.id, PlayerAvatarPath)
 
-            }else{
-                let IndexofPlayer = playerMap.get(d.author.id)
-                players[IndexofPlayer].answer = content
-                console.log(players[IndexofPlayer].name + ": " + players[IndexofPlayer].answer)
+                }else{
+                    let IndexofPlayer = playerMap.get(d.author.id)
+                    players[IndexofPlayer].answer = content
+                    console.log(players[IndexofPlayer].name + ": " + players[IndexofPlayer].answer)
+                }
             }
     }
 })
