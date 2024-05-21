@@ -187,7 +187,7 @@ app.post("/question", (req, res) => {
         }
       });
     loadQuesions()
-    res.status(200).json({questionIndex: allQuestions.length})
+    res.status(200).json({questionIndex: (allQuestions.length - 1)})
 })
 
 

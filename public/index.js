@@ -5,12 +5,12 @@ document.getElementsByTagName('head')[0].appendChild(dynamicStyle);
 
 
 
-let Feddy = document.getElementById("trapQueen")
-let Fard = document.getElementById("Fard")
+// let Feddy = document.getElementById("trapQueen")
+// let Fard = document.getElementById("Fard")
 let endAudio = undefined
 
 let kickedPlayer = undefined
-let _MAX_PLAYERS = 1
+let _MAX_PLAYERS = 4
 let consensusAnswer = undefined
 let takeoverCounter = 2 //number of takeovers per game
 const initHoldTime = 10 //length of a timeout during kick round
@@ -147,9 +147,9 @@ const playerAnswerElements = [player1Answer, player2Answer, player3Answer, playe
 function revealLeaderBoard(){
     endAudio.play()
 
-    setTimeout(function(){
-        Fard.play()
-    }, Math.floor(Math.random() * 240000))
+    // setTimeout(function(){
+    //     Fard.play()
+    // }, Math.floor(Math.random() * 240000))
 
     LBPlayer4Name.innerHTML = activePlayers[kickedPlayer-1]
     LBPlayer4Amount.innerHTML = "$0.00"
