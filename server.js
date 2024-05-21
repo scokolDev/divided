@@ -362,6 +362,7 @@ ws.on('message', function incoming(data){
             }else{
                 let IndexofPlayer = playerMap.get(d.author.id)
                 players[IndexofPlayer].answer = content
+                console.log(players[IndexofPlayer].name + ": " + players[IndexofPlayer].answer)
             }
     }
 })
