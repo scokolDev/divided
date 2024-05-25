@@ -87,16 +87,10 @@ client.login(token);
 
 const testingInt = setInterval(function(){
     try{
-        //console.log(players[0].PID)
-        //console.log(new Date(audio.users.get(players[0].PID)))
         players[0].isSpeaking = (audio.users.get(players[0].PID) ? true : false)
         players[1].isSpeaking = (audio.users.get(players[1].PID) ? true : false)
         players[2].isSpeaking = (audio.users.get(players[2].PID) ? true : false)
         players[3].isSpeaking = (audio.users.get(players[3].PID) ? true : false)
-        // for(j=0; j<4; j++){
-            
-        //     console.log("isSpeaking:" + players[j].isSpeaking)
-        // }
     }catch(error){}
 }, 50)
 
@@ -344,14 +338,16 @@ ws.on('message', function incoming(data){
             "player4: " + players[3].name
 
             )
-            console.log(d)
+            // console.log(d)
             if(d.channel_id == discordAnswerChannelID){
-                let author = d.author.username
-                let content = d.content
                 if(numOfPlayers < 4 && !playerMap.has(d.author.id)){
+                    let author = d.author.username
+                    //let content = d.content
+
                     numOfPlayers++
                     let pNumber = numOfPlayers
                     let PlayerAvatarPath = null
+
                     if(d.author.avatar != null){
                         PlayerAvatarPath = "https://cdn.discordapp.com/avatars/" + d.author.id + '/' + d.author.avatar
                     }else{
@@ -361,9 +357,9 @@ ws.on('message', function incoming(data){
                     }
                     addPlayer(pNumber, author, d.author.global_name, d.author.id, PlayerAvatarPath)
 
-                }else{
+                }else if(playerMap.has(d.author.id)){
                     let IndexofPlayer = playerMap.get(d.author.id)
-                    players[IndexofPlayer].answer = content
+                    players[IndexofPlayer].answer = d.content
                     console.log(players[IndexofPlayer].name + ": " + players[IndexofPlayer].answer)
                 }
             }

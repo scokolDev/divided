@@ -10,7 +10,7 @@ document.getElementsByTagName('head')[0].appendChild(dynamicStyle);
 let endAudio = undefined
 
 let kickedPlayer = undefined
-let _MAX_PLAYERS = 1
+let _MAX_PLAYERS = 4
 let consensusAnswer = undefined
 let takeoverCounter = 2 //number of takeovers per game
 const initHoldTime = 10 //length of a timeout during kick round
@@ -331,7 +331,7 @@ async function selectQuestion(QuestionObj){
             updateStartAmts(bankAmt, 60)
             fullBoardReset()
         
-            const res = await fetch(baseURL + "names")
+            const res = await fetch(baseURL + "displaynames")
             const data = await res.json()
         
             currentQuestion = "vote to kick a player"
@@ -1356,8 +1356,6 @@ function rightAnswerCSS(){
 function wrongAnswerCSS(){
     for(i = 0; i < playerBoxElements.length; i++){
         playerFilmElements[i].style.backgroundColor = "red"
-        // playerAnswerElements[i].style.backgroundColor = "red"
-        // playerNameElements[i].style.backgroundColor = "red"
     }
     total.style.visibility = "hidden"
     win.style.visibility = "hidden"
@@ -1409,7 +1407,7 @@ function revealCorrectAnswers(){
         }
         if(consensusAnswer != undefined && currentQuestion.answer.toLowerCase() == consensusAnswer.toLowerCase() && !isFail){
             bankAmt = potentialWin
-            bank.innerHTML = win.innerHTML;
+            bank.innerHTML = formatCash(potentialWin);
             adjustTextToFillCon(bank, 70, false)
 
             rightAnswerCSS()
