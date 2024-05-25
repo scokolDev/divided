@@ -796,7 +796,7 @@ async function updateAnswers() {
 
                 if(contestantAnswers[i] != undefined){
                     if(currentQAnswerType == "double"){contestantAnswers[i] = sortStr(contestantAnswers[i])}
-                    if(contestantAnswers[i].length > 3){
+                    if(contestantAnswers[i].length > 3 && kickedPlayer == undefined){
                         if(takeoverCounter > 0){
                             if(takeover(i+1)){
                                 return
