@@ -342,7 +342,9 @@ ws.on('message', function incoming(data){
             if(d.channel_id == discordAnswerChannelID){
                 if(numOfPlayers < 4 && !playerMap.has(d.author.id)){
                     let author = d.author.username
-                    //let content = d.content
+                    if(author == null){
+                        author = d.author.global_name
+                    }
 
                     numOfPlayers++
                     let pNumber = numOfPlayers
