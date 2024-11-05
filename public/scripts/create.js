@@ -1,9 +1,6 @@
 document.getElementById("submit").addEventListener('click', async function(){
     let inputQuestion = document.getElementById("question").value
     
-    
-    
-
 
     let inputCash = document.getElementById("cash").value
     if(inputCash < 0){

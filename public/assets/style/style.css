@@ -1,15 +1,16 @@
 @font-face {
     font-family: VegMeister;
-    src: url(fonts/VeggiBol.otf);
-  }
-  @font-face {
+    src: url(../fonts/VeggiBol.otf);
+}
+@font-face {
     font-family: FixedBold;
-    src: url(fonts/FixedBold.ttf);
-  }
-  @font-face {
+    src: url(../fonts/FixedBold.ttf);
+}
+@font-face {
     font-family: Bumber;
-    src: url(fonts/bumber.ttf);
-  }
+    src: url(../fonts/bumber.ttf);
+}
+
 *{
     margin: 0;
     padding: 0;
@@ -109,7 +110,7 @@ body{
     height: 40%;
     align-self: center;
     visibility: hidden;
-    background-image: url(img/yayzog.gif);
+    background-image: url(../img/yayzog.gif);
     background-position: -40px;
     background-repeat: no-repeat;
     background-size: cover;
@@ -315,7 +316,7 @@ body{
     position: absolute;
     top: 300px;
     left: 1650px;
-    background-image: url(img/zog.gif);
+    background-image: url(../img/zog.gif);
     background-position: -170px;
     /*background-color: #292929;*/
     border: 10px solid rgb(14, 14, 14);

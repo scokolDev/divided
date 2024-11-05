@@ -3,10 +3,6 @@ const baseURL = 'http://localhost:3000/'
 var dynamicStyle = document.createElement('style');
 document.getElementsByTagName('head')[0].appendChild(dynamicStyle);
 
-
-
-// let Feddy = document.getElementById("trapQueen")
-// let Fard = document.getElementById("Fard")
 let endAudio = undefined
 
 let kickedPlayer = undefined
@@ -211,7 +207,7 @@ async function importRandSong(){
     endAudio = document.createElement('audio');
     audioSource = document.createElement('source');
     audioSource.setAttribute("type", "audio/mpeg")
-    audioSource.setAttribute("src", "/music/" + endMusicFileName)
+    audioSource.setAttribute("src", "assets/music/" + endMusicFileName)
     endAudio.append(audioSource)
     document.getElementsByTagName('body')[0].appendChild(endAudio); 
 }
