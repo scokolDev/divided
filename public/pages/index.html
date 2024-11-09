@@ -1,8 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+        <!-- <link rel="stylesheet" href="/assets/style/style.css"> -->
+
         <link rel="stylesheet" href="/assets/style/style.css">
+
         <title>Divided</title>
+
+        <style id="dynamicStyle"></style>
     </head>
     <body>
         <div class="winningScreen" id="winningScreen">
@@ -80,8 +85,8 @@
                 <div class="total" id="total"></div>
                 <div class="lose" id="lose"></div>
             </div>
-            <div class="answerBoxWrapper">
-                <div class="answerBox" id="player1Box">
+            <div class="answerBoxWrapper" id="answerBoxWrapper">
+                <!-- <div class="answerBox" id="player1Box">
                     <div id="player1Film">
                         <div class="playerName" id="player1Name">
 
@@ -120,11 +125,11 @@
                             
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
             <div  class="bank" id="bank"></div>
             
-            <div class="timer" id="timer"></div>
+            <div class="timer" id="timer">3</div>
             <div class="holdAlert" id="holdAlert"></div>
             <div class="sand-clock">
                 <div id="bar" class="bar" ></div>
@@ -132,6 +137,16 @@
                 <div id="num-box" class="num-box"></div>
             </div>
         </div>
+        <!-- <script src="/scripts/index.js"></script> -->
+        <script src="/scripts/utilities.js"></script>
+        <script src="/scripts/components/bankElement.js"></script>
+        <script src="/scripts/components/questionElement.js"></script>
+        <script src="/scripts/components/BarElement.js"></script>
+        <script src="/scripts/components/playerBoxElements.js"></script>
+        <script src="/scripts/components/timerElement.js"></script>
+        <script src="/scripts/components/winningsTableElement.js"></script>
+        <script src="/scripts/gameplayVariables.js"></script>
+        <script src="/scripts/playerData.js"></script>
         <script src="/scripts/index.js"></script>
     </body>
 </html>

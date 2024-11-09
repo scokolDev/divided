@@ -55,19 +55,21 @@ app.get("/main", (req, res) =>{
     res.sendFile(__project_dirname + "\\public\\pages\\index.html")
 })
 
-app.get('/nextStage', (req, res) =>{
+app.get('/continue', (req, res) =>{
     //bad request, client is not ready
     if(longPollResponse == undefined){
         res.sendStatus(400)
         return
     }
 
-    longPollResponse.send(200).json({continue: true, moreData: undefined})
+    longPollResponse.status(200).json({continue: true, moreData: undefined})
     res.sendStatus(200)
 })
-app.get('/waiting/:stage', (req, res) => {
+app.get('/nextQuestion', (req, res) =>{
     longPollResponse = res
-    LongPollStage = req.params.stage
+})
+app.get('/waiting', (req, res) => {
+    longPollResponse = res
 })
 // app.get('/startGame', (req, res) => {
 //     longPollResponse.send(200).json({continue: true, moreData: undefined})
@@ -150,7 +152,11 @@ app.get('/selectQuestion/:QI?', (req, res) => {
 //     questionSelected = undefined
 // }
 
-app.get('/playerData', (req, res) =>{ res.json(dis.getPlayerData())})
+app.get('/playerData', (req, res) =>{ 
+    //res.sendStatus(200)
+    console.log("got here")
+    res.status(200).json(dis.getPlayerData())
+})
 app.get('/endsong', (req, res) =>{IO.getRandEndSongPath(req, res)})
 
 app.listen(port, () => console.log('server has started on port: ' + port))

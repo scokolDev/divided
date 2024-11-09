@@ -231,7 +231,9 @@ body{
     border: 10px solid rgb(0, 0, 0);
     font-family: VegMeister;
     font-size: 70px;
+    
 }
+
 
 .timer{
     height: 100px;
@@ -270,6 +272,12 @@ body{
     border: 10px solid rgb(0, 0, 0);
     left: 860px;
     top: 10px;
+    animation: flicker .3s infinite;
+}
+@keyframes flicker {
+    0% {color: red;}
+    50% {color: rgb(0, 0, 0);}
+    100% {color: red;}
 }
 .holdAlert{
     height: 100px;
@@ -555,17 +563,22 @@ body{
     top: 120px;
     transform: skewX(-25deg);
     border: 3px solid rgb(25, 0, 255);
+    color: white;
     background: black;
+    visibility: hidden;
 }
+
 .bBox{
     height: 70px;
     width: 500px;
     position: absolute;
     left: 200px;
-    top: 210px;
+    top:  210px;
     transform: skewX(-25deg);
     border: 3px solid rgb(25, 0, 255);
+    color: white;
     background: black;
+    visibility: hidden;
 }
 .cBox{
     height: 70px;
@@ -575,7 +588,9 @@ body{
     top:  300px;
     transform: skewX(-25deg);
     border: 3px solid rgb(25, 0, 255);
+    color: white;
     background: black;
+    visibility: hidden;
 }
 .dBox{
     height: 70px;
@@ -585,6 +600,7 @@ body{
     top:  390px;
     transform: skewX(-25deg);
     border: 3px solid rgb(25, 0, 255);
+    color: white;
     background: black;
     visibility: hidden;
 }

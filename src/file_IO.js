@@ -3,6 +3,7 @@ import express from 'express'
 import { fileURLToPath } from 'url'
 import path from 'path'
 import fs from 'fs'//
+import csv from 'csv-parser'
 import multer from 'multer'
 import discord from 'discord.js'
 import dotEnv from 'dotenv'//
@@ -31,8 +32,32 @@ const uploadRouter = express.Router()
 
 uploadRouter.post('/uploadcsv', upload.single('questions'), (req, res) => {
     console.log(req.file)
+
+    //TODO: test and update code 
     questions_path = req.file.path
+    
+    fs.createReadStream(questions_path)
+        .pipe(csv())
+        .on('data', (data) => results.push(data))
+        .on('end', () => {
+            //console.log(results);
+    });
+
     res.redirect('/main')
+})
+
+uploadRouter.get('/getNextQuestion', (req, res) => {
+    let testQuestion = new Map()
+    testQuestion.set('prompt', "what is 9 plus 10?")
+    testQuestion.set('a', "20")
+    testQuestion.set('b', "19")
+    testQuestion.set('c', "21")
+    testQuestion.set('answer', "c")
+    testQuestion.set('answerType', "single")
+    testQuestion.set('award', "20000")
+    testQuestion.set('time', "40")
+
+    res.status(200).json(JSON.stringify(Array.from(testQuestion)))
 })
 
 // get all default profile pictures from public/assets/pfps

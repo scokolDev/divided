@@ -1,8 +1,8 @@
 class Player {
-    constructor(playerNum, playerName, playerID, avatarPath) {
-      this.number = playerNum
+    constructor(playerNumber, playerName, UserId, avatarPath) {
+      this.playerNumber = playerNumber
       this.name = playerName
-      this.PID = playerID
+      this.UID = UserId
       this.avatar = avatarPath
 
       this.answer = undefined
