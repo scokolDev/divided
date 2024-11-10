@@ -117,7 +117,7 @@ ws.on('message', function incoming(data){
                 addNewPlayer(d)
             }else if(UIDtoPlayerIndex.has(d.author.id)){
                 //TODO: add input formatting
-                players.get(d.author.id).answer = d.content
+                players.get(UIDtoPlayerIndex.get(d.author.id)).answer = d.content
             }
         }
     }

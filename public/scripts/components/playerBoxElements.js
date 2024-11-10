@@ -48,6 +48,13 @@ class playerManager{
         this.playerMap.set(playerIndex, newPlayer)
         adjustTextToFillCon(newPlayer.nameTag, 40, false)
     }
+    getPlayerAnswer(playerIndex){
+        return this.playerMap.get(playerIndex).innerHTML
+    }
+    setPlayerAnswer(playerIndex, answer){
+        console.log(playerIndex)
+        this.playerMap.get(playerIndex).answer = answer
+    }
     removePlayer(playerIndex){
         //TODO: add removal of player
     }

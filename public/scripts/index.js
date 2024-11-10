@@ -193,35 +193,58 @@ async function getNextQuestion(){
 }
 //updates answers on global vars and on screen
 function updateAnswersNormal(questionType){
-    let currentAnswers = new Array(playerData.size)
     let answerOccurrence = new Map()
+    
 
     playerData.forEach((player, playerNum) =>{
-        let ans =  getAcceptableAnswers(questionType).has(player.get(answer)) ? player.get(answer) : undefined
-    })
-    for(let i = 0; i<players.size; i++){
-        let ans = players[i].answer
-        currentAnswers[i] = getAcceptableAnswers(currentQuestion.type).has(ans) ? ans : undefined
+        console.log(player)
+        let ans =  getAcceptableAnswers(questionType).has(player.answer) ? player.answer : undefined
         
-        if(ans === "takeover" && numberOfTakeovers < TAKEOVERS_PER_GAME){
-            //TODO: update reference to frontend player objects
-            let takeoverAns = playerElement.getPlayerAnswer(i)
-            if(getAcceptableAnswers(currentQuestion.type).has(takeoverAns)){
-                roundTakeover(takeoverAns, i) //TODO: round takeover
-                return
+        if(ans != undefined){
+            if(ans === "takeover" && numberOfTakeovers < TAKEOVERS_PER_GAME){
+                //TODO: update reference to frontend player objects
+                let takeoverAns = playerManagerElement.getPlayerAnswer(playerNum)
+                if(getAcceptableAnswers(questionType).has(takeoverAns)){
+                    roundTakeover(takeoverAns, playerNum) //TODO: round takeover
+                    return
+                }
             }
+            
+            
+            let newAnswerAmount = (answerOccurrence.get(ans) ? answerOccurrence.get(ans) + 1 : 1)
+            if(newAnswerAmount >= playerData.size){
+                consensusAnswer = ans //consensus reached
+            }else{
+                answerOccurrence.set(ans, newAnswerAmount)
+            }
+    
+            //TODO: update reference to frontend player objects
+            playerManagerElement.setPlayerAnswer(playerNum, ans)
         }
+    })
+    // for(let i = 0; i<players.size; i++){
+    //     let ans = players[i].answer
+    //     currentAnswers[i] = getAcceptableAnswers(currentQuestion.type).has(ans) ? ans : undefined
+        
+    //     if(ans === "takeover" && numberOfTakeovers < TAKEOVERS_PER_GAME){
+    //         //TODO: update reference to frontend player objects
+    //         let takeoverAns = playerElement.getPlayerAnswer(i)
+    //         if(getAcceptableAnswers(currentQuestion.type).has(takeoverAns)){
+    //             roundTakeover(takeoverAns, i) //TODO: round takeover
+    //             return
+    //         }
+    //     }
 
-        let newAnswerAmount = (answerOccurrence.get(ans) ? answerOccurrence.get(ans) + 1 : 1)
-        if(newAnswerAmount >= players.length){
-            consensusAnswer = ans //consensus reached
-        }else{
-            answerOccurrence.set(ans, newAnswerAmount)
-        }
+    //     let newAnswerAmount = (answerOccurrence.get(ans) ? answerOccurrence.get(ans) + 1 : 1)
+    //     if(newAnswerAmount >= players.length){
+    //         consensusAnswer = ans //consensus reached
+    //     }else{
+    //         answerOccurrence.set(ans, newAnswerAmount)
+    //     }
 
-        //TODO: update reference to frontend player objects
-        playerElement.setPlayerAnswer(ans, i)
-    }
+    //     //TODO: update reference to frontend player objects
+    //     playerElement.setPlayerAnswer(ans, i)
+    // }
 }
 
 //updates answers on global vars and on screen
@@ -343,7 +366,8 @@ function removePause(){
 
 function startRound(curQ){
     roundStartTime = Date.now()
-    roundEndTime = roundStartTime + (parseInt(curQ.get("time"), 10) * 1000)
+    let roundLength = (parseInt(curQ.get("time"), 10) * 1000)
+    roundEndTime = roundStartTime + roundLength
     let currentTime = roundStartTime
     let roundActive = true
     consensusAnswer = undefined
@@ -352,7 +376,7 @@ function startRound(curQ){
     while(roundActive){
         currentTime = Date.now()
 
-        updateAnswersNormal()
+        updateAnswersNormal(curQ.get("answerType"))
 
         if(currentRoundType != "final" && consensusAnswer != undefined){
             roundActive = false
@@ -367,7 +391,7 @@ function startRound(curQ){
         if(pauseEndTime == undefined){
             percentLeft = (roundEndTime - currentTime) / roundLength
 
-            potentialWinnings = percentLeft * currentQuestion.award
+            potentialWinnings = percentLeft * parseInt(curQ.get("award"), 10)
             
             updateTimer(percentLeft * roundLength)
             updateBar(percentLeft, potentialWinnings)
@@ -412,6 +436,7 @@ function resetGameDisplay(){
     //TODO: reset all css
 }
 async function main(){
+    console.log(getAcceptableAnswers("single"))
     while(true){
         let currentQuestion = await getNextQuestion()
         
