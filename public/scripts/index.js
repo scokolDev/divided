@@ -156,13 +156,13 @@ function setQuestionData(question){
 
     //set question display
     let qPrompt
-    let qAnswers = new Array(4)
-    qAnswers[3] = undefined //TODO: check if neccesary
+    let qAnswers = new Map()
+
     switch(question.answerType){
         case "kick":
             qPrompt = KICK_ROUND_PROMPT
-            playerData.forEach((key, value) =>{
-                qAnswers[key] = value.name
+            playerData.forEach((player, playerNum) =>{
+                qAnswers.set(playerNum, player.name)
             })
             break
 
@@ -173,18 +173,18 @@ function setQuestionData(question){
         
         default:
             qPrompt = question.get("prompt")
-            qAnswers[0] = question.get('a')
-            qAnswers[1] = question.get('b')
-            qAnswers[2] = question.get('c')
+            qAnswers.set('a', question.get('a'))
+            qAnswers.set('b', question.get('b'))
+            qAnswers.set('c', question.get('c'))
             break
     }
-    questionElement.setQuestionData(qPrompt, qAnswers[0], qAnswers[1], qAnswers[2], qAnswers[3])
+    questionElement.setQuestionData(qPrompt, qAnswers)
 
     //set timer
     timerElement.time = question.get("time")
 
     //set time bar
-    TimeBarElement.updateBar(1, question.get("award"))
+    timeBarElement.updateBar(1, question.get("award"))
 }
 async function getNextQuestion(){
     let res = await fetch(BASEURL + "getNextQuestion")
@@ -199,7 +199,7 @@ function updateAnswersNormal(questionType){
     playerData.forEach((player, playerNum) =>{
         console.log(player)
         let ans =  getAcceptableAnswers(questionType).has(player.answer) ? player.answer : undefined
-        
+        //playerManagerElement.setPlayerAnswer(playerNum, ans)
         if(ans != undefined){
             if(ans === "takeover" && numberOfTakeovers < TAKEOVERS_PER_GAME){
                 //TODO: update reference to frontend player objects
@@ -222,29 +222,6 @@ function updateAnswersNormal(questionType){
             playerManagerElement.setPlayerAnswer(playerNum, ans)
         }
     })
-    // for(let i = 0; i<players.size; i++){
-    //     let ans = players[i].answer
-    //     currentAnswers[i] = getAcceptableAnswers(currentQuestion.type).has(ans) ? ans : undefined
-        
-    //     if(ans === "takeover" && numberOfTakeovers < TAKEOVERS_PER_GAME){
-    //         //TODO: update reference to frontend player objects
-    //         let takeoverAns = playerElement.getPlayerAnswer(i)
-    //         if(getAcceptableAnswers(currentQuestion.type).has(takeoverAns)){
-    //             roundTakeover(takeoverAns, i) //TODO: round takeover
-    //             return
-    //         }
-    //     }
-
-    //     let newAnswerAmount = (answerOccurrence.get(ans) ? answerOccurrence.get(ans) + 1 : 1)
-    //     if(newAnswerAmount >= players.length){
-    //         consensusAnswer = ans //consensus reached
-    //     }else{
-    //         answerOccurrence.set(ans, newAnswerAmount)
-    //     }
-
-    //     //TODO: update reference to frontend player objects
-    //     playerElement.setPlayerAnswer(ans, i)
-    // }
 }
 
 //updates answers on global vars and on screen
@@ -355,16 +332,17 @@ function addPauseIfQueued(currentTime){
         pauseEndTime = currentTime + LENGTH_OF_TIMEOUT
         roundEndTime += LENGTH_OF_TIMEOUT
 
-        //TODO: activate pause css
+        timerElement.displayHoldAlert(playerData.get(playerIndex).name)
     }
 }
 function removePause(){
     pauseEndTime = undefined
-
-    //TODO: destroy all pause css
+    timerElement.removeHoldAlert()
 }
 
-function startRound(curQ){
+async function startRound(curQ){
+    await waitForContinue()
+    await clearAnswers()
     roundStartTime = Date.now()
     let roundLength = (parseInt(curQ.get("time"), 10) * 1000)
     roundEndTime = roundStartTime + roundLength
@@ -373,40 +351,58 @@ function startRound(curQ){
     consensusAnswer = undefined
 
     //round loop
-    while(roundActive){
+    let roundInterval = setInterval(() =>{
+        if(!roundActive){return}
         currentTime = Date.now()
-
+        
         updateAnswersNormal(curQ.get("answerType"))
 
-        if(currentRoundType != "final" && consensusAnswer != undefined){
+        //console.log("updated answers")
+
+        if(curQ.get("answerType") != "final" && consensusAnswer != undefined){
+            //console.log("consensus reached norm")
+            //console.log(consensusAnswer)
             roundActive = false
-            break
-        }else if(currentRoundType == "final" && finalPlayerStanding != undefined){
+            clearInterval(roundInterval)
+            return
+        }else if(curQ.get("answerType") == "final" && finalPlayerStanding != undefined){
+            //console.log("consensus reached final")
             roundActive = false
-            break
+            clearInterval(roundInterval)
+            return
         }
+
+        //console.log("checked for consensus")
 
         addPauseIfQueued(currentTime)
 
         if(pauseEndTime == undefined){
-            percentLeft = (roundEndTime - currentTime) / roundLength
+            percentLeft = (roundEndTime - currentTime) / roundLength 
+            percentLeft = percentLeft > 0 ? percentLeft : 0
 
             potentialWinnings = percentLeft * parseInt(curQ.get("award"), 10)
             
-            updateTimer(percentLeft * roundLength)
-            updateBar(percentLeft, potentialWinnings)
-    
+            timerElement.time = (percentLeft * roundLength)/1000
+            timeBarElement.updateBar(percentLeft, potentialWinnings)
+            
             if(currentTime >= roundEndTime){
                 roundActive = false
+                clearInterval(roundInterval)
             }
+            
         }else{
             percentLeft = (pauseEndTime - currentTime) / LENGTH_OF_TIMEOUT
 
-            updateTimer(percentLeft * roundLength)
+            timerElement.time = (percentLeft * LENGTH_OF_TIMEOUT)/1000
+
+            if(currentTime >= pauseEndTime){removePause()}
         }
-        
-        if(currentTime >= pauseEndTime){removePause()}
-    }
+        //console.log("checked for pause and updated elements")
+
+        //console.log(roundActive)
+    
+    }, UPDATE_INTERVAL)
+       
 
     //TODO: put table on screen to show possible win/loss
 }
@@ -445,8 +441,7 @@ async function main(){
 
         await loadQuestionOnScreen(currentQuestion.get("answerType"))
 
-        await waitForContinue()
-        startRound(currentQuestion)
+        await startRound(currentQuestion)
 
         if(currentRoundType != "final"){
             await waitForContinue()

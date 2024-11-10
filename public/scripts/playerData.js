@@ -2,7 +2,9 @@ var numOfPlayers = 0
 var playerData = new Map()
 var hasUsedTimeout = new Map()
 
-
+async function clearAnswers(){
+    const res = await fetch(BASEURL + "clearAnswers")
+}
 function updateSpeaking(playerNumber){
     if(playerData.get(playerNumber).isSpeaking == true){
         playerManagerElement.getPlayerBox(playerNumber).borderColor = "green"

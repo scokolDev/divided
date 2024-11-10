@@ -15,8 +15,13 @@ class timeBar {
     }
 
     updateBar(percentLeft, remainingCash = undefined){
-        this.numBox.innerHTML = remainingCash ? formatCash(remainingCash) : ""
-
+        this.numBox.innerHTML = remainingCash != undefined ? formatCash(remainingCash) : ""
+        if(remainingCash != undefined){
+            this.numBox.innerHTML = formatCash(remainingCash)
+            this.numBox.style.fontSize = (50 - (parseInt(Math.log10(remainingCash), 10))*3) + "px"
+        }else{
+            this.numBox.innerHTML = ""
+        }
         let modifier = percentLeft >= 0 ? percentLeft : 0
         let remainingHeight = this.initHeight * modifier;
         this.bar.style.height = remainingHeight + "px";

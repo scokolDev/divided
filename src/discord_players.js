@@ -133,7 +133,11 @@ function deletePlayer(playerNumber){
     UIDtoPlayerIndex.delete(players.get(playerNumber).UID)
     players.delete(playerNumber)
 }
-
+function clearAnswers(){
+    players.forEach((player) => {
+        player.answer = undefined
+    })
+}
 function togglePlayerMute(){
     //WARN: make sure that map forEach is used right
     players.forEach((value) => {
@@ -145,4 +149,4 @@ function togglePlayerMute(){
     isMuted = !isMuted
 }
 
-export default {getPlayerData, deletePlayer, togglePlayerMute}
+export default {getPlayerData, deletePlayer, togglePlayerMute, clearAnswers}

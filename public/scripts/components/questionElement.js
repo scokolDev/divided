@@ -25,6 +25,17 @@ class QuestionDisplay {
         this.BLetter = document.getElementById("B");
         this.CLetter = document.getElementById("C");
         this.DLetter = document.getElementById("D");
+
+        this.answerLetterToElement = new Map([
+            ['a',  [this.ALetter, this.aAnswerText]],
+            ['1',  [this.ALetter, this.aAnswerText]],
+            ['b',  [this.BLetter, this.bAnswerText]],
+            ['2',  [this.BLetter, this.bAnswerText]],
+            ['c',  [this.CLetter, this.cAnswerText]],
+            ['3',  [this.CLetter, this.cAnswerText]],
+            ['d',  [this.DLetter, this.dAnswerText]],
+            ['4',  [this.DLetter, this.dAnswerText]],
+        ])
     }
 
     setAnswerLetters(type){
@@ -41,23 +52,35 @@ class QuestionDisplay {
         this.DLetter.innerHTML = answerLetters[3]
     }
 
-    setQuestionData(prompt, aAnswer, bAnswer, cAnswer, dAnswer=undefined){
+    setQuestionData(prompt, answersMap){
         this.promptText.innerHTML = prompt;
         adjustTextToFillCon(this.promptText, 40, true)
 
-        this.aAnswerText.innerHTML = aAnswer;
-        adjustTextToFillCon(this.aAnswerText, 40, false)
+        this.setAnswers(answersMap)
+    }
 
-        this.bAnswerText.innerHTML = bAnswer;
-        adjustTextToFillCon(this.bAnswerText, 40, false)
+    setAnswers(answersMap){
+        answersMap.forEach((answerText, answerLetter) => {
+            let answerElements = this.answerLetterToElement.get(answerLetter)
+            answerElements[1].innerHTML = answerText;
+            adjustTextToFillCon(answerElements[1], 40, false)
 
-        this.cAnswerText.innerHTML = cAnswer;
-        adjustTextToFillCon(this.cAnswerText, 40, false)
+            answerElements[0].innerHTML = answerLetter
+            
+        });
+        // this.aAnswerText.innerHTML = aAnswer;
+        // adjustTextToFillCon(this.aAnswerText, 40, false)
 
-        if(dAnswer){
-            this.dAnswerText.innerHTML = dAnswer;
-            adjustTextToFillCon(this.dAnswerText, 40, false)
-        }
+        // this.bAnswerText.innerHTML = bAnswer;
+        // adjustTextToFillCon(this.bAnswerText, 40, false)
+
+        // this.cAnswerText.innerHTML = cAnswer;
+        // adjustTextToFillCon(this.cAnswerText, 40, false)
+
+        // if(dAnswer){
+        //     this.dAnswerText.innerHTML = dAnswer;
+        //     adjustTextToFillCon(this.dAnswerText, 40, false)
+        // }
     }
 
     setQuestionDisplay(isDisplay){

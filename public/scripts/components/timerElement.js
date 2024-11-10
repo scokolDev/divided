@@ -6,7 +6,7 @@ class timer{
     }
 
     set time(newTime){
-        this.container.innerHTML = parseInt(newTime, 10)
+        this.container.innerHTML = Math.ceil(newTime)
     }
 
     displayHoldAlert(playerName){
@@ -14,6 +14,7 @@ class timer{
         this.holdAlert.style.visibility = "visible"
     }
     removeHoldAlert(){
+        this.holdAlert.innerHTML = ""
         this.holdAlert.style.visibility = "hidden"
     }
 

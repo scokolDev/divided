@@ -159,6 +159,11 @@ app.get('/playerData', (req, res) =>{
 })
 app.get('/endsong', (req, res) =>{IO.getRandEndSongPath(req, res)})
 
+app.get('/clearAnswers', (req, res) =>{
+    dis.clearAnswers()
+    res.sendStatus(200)
+})
+
 app.listen(port, () => console.log('server has started on port: ' + port))
 
 
