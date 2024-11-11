@@ -37,7 +37,11 @@ class QuestionDisplay {
             ['4',  [this.DLetter, this.dAnswerText]],
         ])
     }
-
+    setAnswerColor(answerElement, borderColor, shadowColor){
+        answerElement.style.border = "3px solid " + borderColor
+        answerElement.style.boxShadow = shadowColor + " 0 0 10px 1px"
+    }
+    
     setAnswerLetters(type){
         let answerLetters
         switch(type){
@@ -68,19 +72,6 @@ class QuestionDisplay {
             answerElements[0].innerHTML = answerLetter
             
         });
-        // this.aAnswerText.innerHTML = aAnswer;
-        // adjustTextToFillCon(this.aAnswerText, 40, false)
-
-        // this.bAnswerText.innerHTML = bAnswer;
-        // adjustTextToFillCon(this.bAnswerText, 40, false)
-
-        // this.cAnswerText.innerHTML = cAnswer;
-        // adjustTextToFillCon(this.cAnswerText, 40, false)
-
-        // if(dAnswer){
-        //     this.dAnswerText.innerHTML = dAnswer;
-        //     adjustTextToFillCon(this.dAnswerText, 40, false)
-        // }
     }
 
     setQuestionDisplay(isDisplay){
@@ -88,12 +79,7 @@ class QuestionDisplay {
             this.wrapper.style.animation = "moveUp 1s";
             this.wrapper.style.top = "400px";
         }else{
-            this.wrapper.style.animation = "";
-            this.wrapper.style.top = "1080px";
-            this.aBox.style.visibility = "hidden"
-            this.bBox.style.visibility = "hidden" 
-            this.cBox.style.visibility = "hidden" 
-            this.dBox.style.visibility = "hidden"   
+            this.resetQuestionCSS()
         }
     }
 
@@ -115,43 +101,114 @@ class QuestionDisplay {
         }
     }
 
-    makeColor(color){
-        let borderColor //TODO: add default colors
-        let shadowColor //
-        switch(color){
-            case "orange":
-                borderColor = "rgb(255, 255, 0)"
-                shadowColor = "rgb(241, 90, 34)"
-
+    
+    setColor(borderColor, shadowColor, isJustPrompt){
+        switch(isJustPrompt){
+            case false:
+                this.setAnswerColor(this.aBox, borderColor, shadowColor)
+                this.setAnswerColor(this.bBox, borderColor, shadowColor)
+                this.setAnswerColor(this.cBox, borderColor, shadowColor)
+            case true:
+                this.promptBox.style.border = "3px solid " + borderColor
+                this.promptBox.style.boxShadow = shadowColor + " 0 0 10px 1px"
         }
-        this.promptBox.style.border = "3px solid " + borderColor;
-        this.aBox.style.border = "3px solid " + borderColor;
-        this.bBox.style.border = "3px solid " + borderColor;
-        this.cBox.style.border = "3px solid " + borderColor;
-        this.promptBox.style.boxShadow = shadowColor + " 0 0 10px 1px";
-        this.aBox.style.boxShadow = shadowColor + " 0 0 10px 1px";
-        this.bBox.style.boxShadow = shadowColor + " 0 0 10px 1px";
-        this.cBox.style.boxShadow = shadowColor + " 0 0 10px 1px";
+    }
+    resetQuestionCSS(){
+        this.setColor(DEFAULT_COLOR, DEFAULT_Q_SHADOW, false)
+
+        this.wrapper.style.animation = "";
+        this.wrapper.style.top = "1080px";
+
+        this.aBox.left = "200px"
+        this.bBox.left = "200px"
+        this.cBox.left = "200px"
+        this.dBox.left = "200px"
+
+        this.aBox.top = "120px"
+        this.bBox.top = "210px"
+        this.cBox.top = "300px"
+        this.dBox.top = "390px"
+
+        this.aBox.style.visibility = "hidden"
+        this.bBox.style.visibility = "hidden" 
+        this.cBox.style.visibility = "hidden" 
+        this.dBox.style.visibility = "hidden" 
+
+        this.aBox.style.animation = ""
+        this.bBox.style.animation = ""
+        this.cBox.style.animation = ""
+        this.dBox.style.animation = ""
+    }
+    revealSingleAnswer(answerLetter){
+        let answerElement = this.aBox
+        switch(answerLetter){
+            case 'a':
+            case '1':
+                answerElement = this.aBox
+                break
+            case 'b':
+            case '2':
+                answerElement = this.bBox
+                break
+            case 'c':
+            case '3':
+                answerElement = this.cBox
+                break
+            case 'd':
+            case '4':
+                answerElement = this.dBox
+                break
+        }
+        answerElement.style.animation = "correctAnswers .5s";
+        answerElement.style.left = "100px";
+        this.setAnswerColor(answerElement, CORRECT_COLOR, CORRECT_Q_SHADOW)
+    }
+    revealOrderAnswers(answerOrderString){
+        let answerOrder = Array.from(answerOrderString)
+
+        if(answerOrder[0] == "b"){
+            this.bBox.style.animation = "BtoA 1.5s";
+            this.bBox.style.top = "120px";
+        }else if(answerOrder[0] == "c"){
+            this.cBox.style.animation = "CtoA 1.5s";
+            this.cBox.style.top = "120px";
+        }
+    
+        if(answerOrder[1] == "a"){
+            this.aBox.style.animation = "AtoB 1.5s";
+            this.aBox.style.top = "210px";
+        }else if(answerOrder[1] == "c"){
+            this.cBox.style.animation = "CtoB 1.5s";
+            this.cBox.style.top = "210px";
+        }
+    
+        if(answerOrder[2] == "a"){
+            this.aBox.style.animation = "AtoC 1.5s";
+            this.aBox.style.top = "300px";
+        }else if(answerOrder[2] == "b"){
+            this.bBox.style.animation = "BtoC 1.5s";
+            this.bBox.style.top = "300px";
+        }
+        this.setAnswerColor(this.aBox, CORRECT_COLOR, CORRECT_Q_SHADOW)
+        this.setAnswerColor(this.bBox, CORRECT_COLOR, CORRECT_Q_SHADOW)
+        this.setAnswerColor(this.cBox, CORRECT_COLOR, CORRECT_Q_SHADOW)
+
+    }
+    revealCorrectAnswers(correctAnswer){
+        console.log(correctAnswer)
+        console.log(correctAnswer.length)
+        switch(correctAnswer.length){
+            case 1:
+                this.revealSingleAnswer(correctAnswer)
+                break
+            case 2:
+                this.revealSingleAnswer(correctAnswer[0])
+                this.revealSingleAnswer(correctAnswer[1])
+                break
+            case 3:
+                this.revealOrderAnswers(correctAnswer)
+                break
+        }
     }
 
 }
-
-// let questionElement = new QuestionDisplay()
-// questionElement.setQuestionData("test prompt", "answer1", "answer2", "answer3")
-// questionElement.setQuestionDisplay(true)
-
-// setTimeout(() =>{
-//     questionElement.displayAnswer('a')
-// }, 2000)
-
-// setTimeout(() =>{
-//     questionElement.displayAnswer('b')
-// }, 4000)
-
-// setTimeout(() =>{
-//     questionElement.displayAnswer('c')
-// }, 6000)
-
-// setTimeout(() =>{
-//     questionElement.displayAnswer('d')
-// }, 8000)

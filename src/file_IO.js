@@ -64,7 +64,7 @@ uploadRouter.get('/getNextQuestion', (req, res) => {
 let defaultPfps = []
 fs.readdir(pfps_path, function(err, files){
     for(let i=0; i<files.length; i++){
-        defaultPfps.push("/img/pfps/" + files[i])
+        defaultPfps.push("/assets/img/pfps/" + files[i])
     }
 })
 
@@ -82,7 +82,7 @@ function getRandEndSongPath(req, res){
 
 function getRandPfp(){
     let randomPfpIdx = Math.floor(Math.random() * defaultPfps.length)
-    PlayerAvatarPath = defaultPfps[randomPfpIdx]
+    let PlayerAvatarPath = defaultPfps[randomPfpIdx]
     defaultPfps.splice(randomPfpIdx, 1)
     return PlayerAvatarPath
 }

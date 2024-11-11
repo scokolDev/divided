@@ -3,8 +3,9 @@ var playerData = new Map()
 var hasUsedTimeout = new Map()
 
 async function clearAnswers(){
-    const res = await fetch(BASEURL + "clearAnswers")
+    await fetch(BASEURL + "clearAnswers")
 }
+
 function updateSpeaking(playerNumber){
     if(playerData.get(playerNumber).isSpeaking == true){
         playerManagerElement.getPlayerBox(playerNumber).borderColor = "green"
@@ -12,25 +13,24 @@ function updateSpeaking(playerNumber){
         playerManagerElement.getPlayerBox(playerNumber).borderColor = "black"
     }
 }
+
 async function updatePlayerData(){
     const res = await fetch(BASEURL + "playerData")
-    //console.log(res)
     let data = await res.json()
     data = new Map(JSON.parse(data))
-    //console.log(data.get(1).name)
 
-    data.forEach((value, key) => {
+    data.forEach((player, playerNum) => {
         //console.log(key + " === " + value)
-        if(!playerData.has(key)){
-            playerManagerElement.addPlayer(value.playerNumber, value.name)
-            hasUsedTimeout.set(key, false)
+        if(!playerData.has(playerNum)){
+            playerManagerElement.addPlayer(player.playerNumber, player.name, player.avatar)
+            hasUsedTimeout.set(playerNum, false)
         }
-        playerData.set(value.playerNumber, value)
-        updateSpeaking(value.playerNumber)
+        playerData.set(player.playerNumber, player)
+        //console.log(player.name + " " + player.answer)
+        updateSpeaking(player.playerNumber)
     })
+    
 }
-//updatePlayerData()
-//console.log(playerData)
 setInterval(updatePlayerData, 50)
 
 

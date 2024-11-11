@@ -2,16 +2,20 @@ class playerBox {
     constructor(playerIndex, playerName, playerAvatarPath){
         this.boxWrapper = document.createElement('div')
         this.boxWrapper.setAttribute('class', 'answerBox')
+        this.boxWrapper.style.backgroundImage = "url(" + playerAvatarPath + ")"
+
+        this.film = document.createElement('div')
+        this.boxWrapper.appendChild(this.film)
 
         this.nameTag = document.createElement('div')
         this.nameTag.setAttribute('class', 'playerName')
         this.nameTag.innerHTML = playerName
-        this.boxWrapper.appendChild(this.nameTag)
+        this.film.appendChild(this.nameTag)
         
 
         this.answerBox = document.createElement('div')
         this.answerBox.setAttribute('class', 'playerAnswer')
-        this.boxWrapper.appendChild(this.answerBox)
+        this.film.appendChild(this.answerBox)
 
        
     }
@@ -25,6 +29,10 @@ class playerBox {
         }
 
         this.boxWrapper.style.border = "10px solid " + newBorderColor
+    }
+
+    set filmColor(color){
+        this.film.style.backgroundColor = color
     }
 
     set answer(ans) {
@@ -49,7 +57,7 @@ class playerManager{
         adjustTextToFillCon(newPlayer.nameTag, 40, false)
     }
     getPlayerAnswer(playerIndex){
-        return this.playerMap.get(playerIndex).innerHTML
+        return this.playerMap.get(playerIndex).answer
     }
     setPlayerAnswer(playerIndex, answer){
         console.log(playerIndex)
@@ -68,6 +76,18 @@ class playerManager{
 
     getAnswer(playerIndex){
         return this.playerMap.get(playerIndex).answer
+    }
+
+    clearPlayerAnswers(){
+        this.playerMap.forEach((playerBox) =>{
+            playerBox.answer = ""
+        })
+    }
+    
+    setPlayerColor(color){
+        this.playerMap.forEach((playerBox) =>{
+            playerBox.filmColor = color
+        })
     }
 }
 

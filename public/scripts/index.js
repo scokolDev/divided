@@ -152,6 +152,13 @@ async function waitForContinue(){
 
     return
 }
+function calcFinalAnswers(){
+    return new Map([
+        ['1', bankElement.amount * FIRST_PLACE_MODIFIER],
+        ['2', bankElement.amount * SECOND_PLACE_MODIFIER],
+        ['3', bankElement.amount * THIRD_PLACE_MODIFIER],
+    ])
+}
 function setQuestionData(question){
 
     //set question display
@@ -164,11 +171,23 @@ function setQuestionData(question){
             playerData.forEach((player, playerNum) =>{
                 qAnswers.set(playerNum, player.name)
             })
+
+            //set timer
+            timerElement.time = KICK_ROUND_LENGTH
+
+            //set time bar
+            timeBarElement.updateBar(1, question.get("award"))
             break
 
         case "final":
             qPrompt = FINAL_ROUND_PROMPT
-            //TODO: write function to calculate final round answers
+            qAnswers = calcFinalAnswers()
+
+            //set timer
+            timerElement.time = FINAL_ROUND_LENGTH
+
+            //set time bar
+            timeBarElement.updateBar(1, question.get("award"))
             break
         
         default:
@@ -176,20 +195,33 @@ function setQuestionData(question){
             qAnswers.set('a', question.get('a'))
             qAnswers.set('b', question.get('b'))
             qAnswers.set('c', question.get('c'))
+
+            //set timer
+            timerElement.time = question.get("time")
+
+            //set time bar
+            timeBarElement.updateBar(1, question.get("award"))
             break
     }
     questionElement.setQuestionData(qPrompt, qAnswers)
 
-    //set timer
-    timerElement.time = question.get("time")
-
-    //set time bar
-    timeBarElement.updateBar(1, question.get("award"))
 }
 async function getNextQuestion(){
     let res = await fetch(BASEURL + "getNextQuestion")
     let data = await res.json()
     return new Map(JSON.parse(data))
+}
+function roundTakeover(ans, takeoverPlayerNum){
+    numberOfTakeovers++
+    consensusAnswer = ans
+
+    playerData.forEach((player, playerNum) => {
+        playerManagerElement.setPlayerAnswer(playerNum, ans)
+    })
+
+    playerManagerElement.setPlayerAnswer(takeoverPlayerNum, "🙋‍♂️")
+    //TODO: add takeover css
+    takeoverBoardCSS()
 }
 //updates answers on global vars and on screen
 function updateAnswersNormal(questionType){
@@ -201,25 +233,26 @@ function updateAnswersNormal(questionType){
         let ans =  getAcceptableAnswers(questionType).has(player.answer) ? player.answer : undefined
         //playerManagerElement.setPlayerAnswer(playerNum, ans)
         if(ans != undefined){
-            if(ans === "takeover" && numberOfTakeovers < TAKEOVERS_PER_GAME){
-                //TODO: update reference to frontend player objects
-                let takeoverAns = playerManagerElement.getPlayerAnswer(playerNum)
-                if(getAcceptableAnswers(questionType).has(takeoverAns)){
-                    roundTakeover(takeoverAns, playerNum) //TODO: round takeover
-                    return
+            if(ans === "takeover"){
+                if(numberOfTakeovers < TAKEOVERS_PER_GAME){
+                    let takeoverAns = playerManagerElement.getPlayerAnswer(playerNum)
+                    console.log(takeoverAns)
+                    if(getAcceptableAnswers(questionType).has(takeoverAns)){
+                        roundTakeover(takeoverAns, playerNum) //TODO: round takeover
+                        return
+                    }
                 }
-            }
-            
-            
-            let newAnswerAmount = (answerOccurrence.get(ans) ? answerOccurrence.get(ans) + 1 : 1)
-            if(newAnswerAmount >= playerData.size){
-                consensusAnswer = ans //consensus reached
             }else{
-                answerOccurrence.set(ans, newAnswerAmount)
+                let newAnswerAmount = (answerOccurrence.get(ans) ? answerOccurrence.get(ans) + 1 : 1)
+                if(newAnswerAmount >= playerData.size){
+                    consensusAnswer = ans //consensus reached
+                }else{
+                    answerOccurrence.set(ans, newAnswerAmount)
+                }
+        
+                //TODO: update reference to frontend player objects
+                playerManagerElement.setPlayerAnswer(playerNum, ans)
             }
-    
-            //TODO: update reference to frontend player objects
-            playerManagerElement.setPlayerAnswer(playerNum, ans)
         }
     })
 }
@@ -279,47 +312,7 @@ function updateAnswersFinal(){
     }
 }
 
-//checks to see if the round has ended through consensus
-function isConsensus(){
-    let answers
 
-    switch(currentRoundType){
-        case ("normal"):
-            answers = Set()
-            for(let i = 0; i<players.size; i++){
-                if(players[i].answer != undefined){
-                    answers.add(players[i].answer)
-                    if(answers.size > 1){
-                        return false //no consensus
-                    }
-                }else{return false} //unanswered players 
-            }
-            return true
-
-        case ("kick"):
-            answers = Map()
-            for(let i = 0; i<players.size; i++){
-                if(players[i].answer != undefined){
-                    let newAnswerAmount = (answers.get(players[i].answer) ? answers.get(players[i].answer) + 1 : 1)
-                    if(newAnswerAmount >= players.size-1){
-                        return true //consensus reached
-                    }else{
-                        answers.set(players[i].answer, newAnswerAmount)
-                    }
-                }else{return false} //unanswered players 
-            }
-            return false //no consensus reached
-
-        case ("final"):
-            answers = Set()
-            for(let i = 0; i<players.size; i++){
-                if(players[i].answer != undefined){
-                    answers.add(players[i].answer)
-                }else{return false} //unanswered players 
-            }
-            return answers.size == players.size ? true : false
-    }   
-}
 
 function queueTimeout(playerIndex){
     timeoutQueue.push(playerIndex)
@@ -340,39 +333,65 @@ function removePause(){
     timerElement.removeHoldAlert()
 }
 
+function isConsensus(answerType, consensusAnswer, finalPlayerStanding){
+    if(answerType != "final" && consensusAnswer != undefined){
+        return true
+    }else if(answerType == "final" && finalPlayerStanding != undefined){
+        return true
+    }
+    return false
+}
+
+function updateAnswers(answerType){
+    switch(answerType){
+        case "final":
+            updateAnswersFinal()
+            break
+        case "kick":
+            updateAnswersKick()
+            break
+        default:
+            updateAnswersNormal(answerType)
+    }
+}
+
+function updateFinalAnswerAmounts(){
+    questionElement.setAnswers(calcFinalAnswers())
+}
 async function startRound(curQ){
     await waitForContinue()
     await clearAnswers()
     roundStartTime = Date.now()
-    let roundLength = (parseInt(curQ.get("time"), 10) * 1000)
+
+    let roundLength = 0
+    switch(curQ.get("answerType")){
+        case "final":
+            roundLength = (FINAL_ROUND_PROMPT * 1000)
+            break
+        case "kick":
+            roundLength = (KICK_ROUND_LENGTH * 1000)
+            break
+        default:
+            roundLength = (parseInt(curQ.get("time"), 10) * 1000)
+    }
+
     roundEndTime = roundStartTime + roundLength
     let currentTime = roundStartTime
     let roundActive = true
     consensusAnswer = undefined
+    percentLeft = 1
+    let potentialWinnings = percentLeft * parseInt(curQ.get("award"), 10)
 
     //round loop
     let roundInterval = setInterval(() =>{
         if(!roundActive){return}
         currentTime = Date.now()
         
-        updateAnswersNormal(curQ.get("answerType"))
-
-        //console.log("updated answers")
-
-        if(curQ.get("answerType") != "final" && consensusAnswer != undefined){
-            //console.log("consensus reached norm")
-            //console.log(consensusAnswer)
-            roundActive = false
-            clearInterval(roundInterval)
-            return
-        }else if(curQ.get("answerType") == "final" && finalPlayerStanding != undefined){
-            //console.log("consensus reached final")
-            roundActive = false
-            clearInterval(roundInterval)
+        updateAnswers(curQ.get("answerType"))
+        if(isConsensus(curQ.get("answerType"), consensusAnswer, finalPlayerStanding)){
+            endRound()
             return
         }
-
-        //console.log("checked for consensus")
 
         addPauseIfQueued(currentTime)
 
@@ -386,8 +405,8 @@ async function startRound(curQ){
             timeBarElement.updateBar(percentLeft, potentialWinnings)
             
             if(currentTime >= roundEndTime){
-                roundActive = false
-                clearInterval(roundInterval)
+                endRound()
+                return
             }
             
         }else{
@@ -397,21 +416,37 @@ async function startRound(curQ){
 
             if(currentTime >= pauseEndTime){removePause()}
         }
-        //console.log("checked for pause and updated elements")
-
-        //console.log(roundActive)
-    
+        
+        if(curQ.get("answerType") == "final"){updateFinalAnswerAmounts()}
     }, UPDATE_INTERVAL)
-       
 
+    const endRound = () => {
+        roundActive = false
+        clearInterval(roundInterval)
+        winningsTableElement.setTableData(bankElement.intAmount, bankElement.intAmount+potentialWinnings, bankElement.intAmount/2)
+        winningsTableElement.display = true
+        
+    }
+
+    
+       
+    
     //TODO: put table on screen to show possible win/loss
 }
 
-function revealRoundResults(){
-    switch(currentRoundType){
-        case("normal"):
+async function revealRoundResults(correctAnswer){
+    await waitForContinue()
 
-        case("kick"):
+    questionElement.revealCorrectAnswers(correctAnswer)
+
+    if(consensusAnswer == correctAnswer){
+        winningsTableElement.revealResult("win")
+        bankElement.amount = winningsTableElement.intWin
+        correctAnswerCSS()
+    }else{
+        winningsTableElement.revealResult("lose")
+        bankElement.amount = winningsTableElement.intLose
+        wrongAnswerCSS()
     }
 }
 
@@ -429,10 +464,10 @@ async function loadQuestionOnScreen(QuestionType){
     }
 }
 function resetGameDisplay(){
-    //TODO: reset all css
+    resetBoard()
 }
 async function main(){
-    console.log(getAcceptableAnswers("single"))
+    //console.log(getAcceptableAnswers("single"))
     while(true){
         let currentQuestion = await getNextQuestion()
         
@@ -444,8 +479,7 @@ async function main(){
         await startRound(currentQuestion)
 
         if(currentRoundType != "final"){
-            await waitForContinue()
-            revealRoundResults()
+            await revealRoundResults(currentQuestion.get("answer"))
 
             await waitForContinue()
             resetGameDisplay()
@@ -456,7 +490,47 @@ async function main(){
     //send final data and get redirected to leaderboard
 }
 main()
+//checks to see if the round has ended through consensus
+// function isConsensus(){
+//     let answers
 
+//     switch(currentRoundType){
+//         case ("normal"):
+//             answers = Set()
+//             for(let i = 0; i<players.size; i++){
+//                 if(players[i].answer != undefined){
+//                     answers.add(players[i].answer)
+//                     if(answers.size > 1){
+//                         return false //no consensus
+//                     }
+//                 }else{return false} //unanswered players 
+//             }
+//             return true
+
+//         case ("kick"):
+//             answers = Map()
+//             for(let i = 0; i<players.size; i++){
+//                 if(players[i].answer != undefined){
+//                     let newAnswerAmount = (answers.get(players[i].answer) ? answers.get(players[i].answer) + 1 : 1)
+//                     if(newAnswerAmount >= players.size-1){
+//                         return true //consensus reached
+//                     }else{
+//                         answers.set(players[i].answer, newAnswerAmount)
+//                     }
+//                 }else{return false} //unanswered players 
+//             }
+//             return false //no consensus reached
+
+//         case ("final"):
+//             answers = Set()
+//             for(let i = 0; i<players.size; i++){
+//                 if(players[i].answer != undefined){
+//                     answers.add(players[i].answer)
+//                 }else{return false} //unanswered players 
+//             }
+//             return answers.size == players.size ? true : false
+//     }   
+// }
 //-----------------------------------------------
 // function revealLeaderBoard(){
 //     endAudio.play()
@@ -1434,7 +1508,7 @@ main()
 // }
 // function resetAnswerDisplay(){
 //     for(i = 0; i < playerAnswerElements.length; i++){
-//         playerFilmElements[i].style.backgroundColor = ""//"rgb(0, 255, 242)"
+//         playerFilmElements[i]styl.e.backgroundColor = ""//"rgb(0, 255, 242)"
 //         playerAnswerElements[i].innerHTML = ""
 //     }
 // }

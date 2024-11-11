@@ -6,7 +6,7 @@ class timer{
     }
 
     set time(newTime){
-        this.container.innerHTML = Math.ceil(newTime)
+        this.container.innerHTML = newTime != undefined ? Math.ceil(newTime) : ""
     }
 
     displayHoldAlert(playerName){

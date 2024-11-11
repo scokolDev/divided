@@ -5,14 +5,27 @@ class winningsTable{
         this.dynamicStyle = document.getElementById("dynamicStyle")
 
         this.winContainer = document.getElementById("win")
+        this.intWin = 0
         this.totalContainer = document.getElementById("total")
+        this.intTotal = 0
         this.loseContainer = document.getElementById("lose")
+        this.intLose = 0
     }
 
     setValues(total, win=undefined, lose=undefined){
         this.totalContainer = formatCash(total)
-        this.winContainer = win ? formatCash(win) : ""
-        this.loseContainer = lose ? formatCash(lose) : ""
+        this.intTotal = total
+
+        if(win != undefined){
+            this.winContainer = win ? formatCash(win) : ""
+            this.loseContainer = lose ? formatCash(lose) : ""
+            this.intWin = win
+            this.intLose = lose
+        }else{
+            this.loseContainer.style.visibility = "hidden"
+            this.winContainer.style.visibility = "hidden"
+        }
+        
     }
 
     revealResult(resultType){
@@ -96,6 +109,18 @@ class winningsTable{
                 this.loseContainer.style.fontSize = newFont + "px"
                 break
             case "total":
+                return
+        }
+    }
+    setTableData(total, winning = undefined, losing = undefined){
+        if(winning == undefined){
+            this.winContainer.style.visibility = "hidden"
+            this.loseContainer.style.visibility = "hidden"
+            this.totalContainer.innerHTML = formatCash(total)
+        }else{
+            this.totalContainer.innerHTML = formatCash(total)
+            this.winContainer.innerHTML = formatCash(winning)
+            this.loseContainer.innerHTML = formatCash(losing)
         }
     }
     set display(isDisplay){

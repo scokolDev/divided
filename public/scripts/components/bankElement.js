@@ -3,10 +3,12 @@ class bank{
         this.container = document.getElementById("bank")
         this.value = startingValue
 
-        this.amount = this.value
+        this.intAmount = this.value
+        this.amount = this.intAmount
     }
 
     set amount(newAmt){
+        this.intAmount = newAmt
         this.container.innerHTML = formatCash(newAmt)
     }
 
