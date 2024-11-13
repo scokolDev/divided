@@ -1,13 +1,13 @@
 class bank{
     constructor(startingValue=0){
         this.container = document.getElementById("bank")
-        this.value = startingValue
+        this.container.innerHTML = formatCash(startingValue)
+        //this.value = startingValue
 
-        this.intAmount = this.value
-        this.amount = this.intAmount
+        this.intAmount = startingValue
     }
 
-    set amount(newAmt){
+    setAmount(newAmt){
         this.intAmount = newAmt
         this.container.innerHTML = formatCash(newAmt)
     }

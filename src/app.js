@@ -46,8 +46,10 @@ let isLoad = false
 let allQuestions = []
 
 
+let isRoundActive = false
+
 let longPollResponse
-let LongPollStage
+
 app.get("/", (req, res) =>{
     res.sendFile(__project_dirname + "\\public\\pages\\upload.html")
 })
@@ -55,14 +57,23 @@ app.get("/main", (req, res) =>{
     res.sendFile(__project_dirname + "\\public\\pages\\index.html")
 })
 
-app.get('/continue', (req, res) =>{
-    //bad request, client is not ready
-    if(longPollResponse == undefined){
-        res.sendStatus(400)
-        return
-    }
+app.get('/setRoundActive/:newValue', (req, res) =>{
+    isRoundActive = req.params.newValue === 'true' ? true : false
+    res.sendStatus(200)
+})
 
-    longPollResponse.status(200).json({continue: true, moreData: undefined})
+app.get('/continue', (req, res) =>{
+    console.log(isRoundActive)
+    if(!isRoundActive){
+        //bad request, client is not ready
+        if(longPollResponse == undefined){
+            res.sendStatus(400)
+            return
+        }
+
+        longPollResponse.status(200).json({continue: true, moreData: undefined})
+        longPollResponse = undefined
+    }
     res.sendStatus(200)
 })
 app.get('/nextQuestion', (req, res) =>{
@@ -154,7 +165,7 @@ app.get('/selectQuestion/:QI?', (req, res) => {
 
 app.get('/playerData', (req, res) =>{ 
     //res.sendStatus(200)
-    console.log("got here")
+    //console.log("got here")
     res.status(200).json(dis.getPlayerData())
 })
 app.get('/endsong', (req, res) =>{IO.getRandEndSongPath(req, res)})

@@ -37,9 +37,9 @@ client.once('ready', () => {
         selfMute: false,
     });
     audio = connection.receiver.speaking
-    console.log(connection)
+    //console.log(connection)
 
-    console.log(audio)
+    //console.log(audio)
 });
 
 //TODO: add speaking polling
@@ -51,6 +51,15 @@ let payload = {
     d:{
         token: process.env.TOKEN,
         intents: 641,
+        presence: {
+            "activities": [{
+                "name": "Divided!",
+                "type": 0
+            }],
+            "status": "online",
+            "since": 1,
+            "afk": false
+        },
         properties:{
             $os: 'windows',
             $browser:'firefox',
@@ -76,9 +85,12 @@ function addNewPlayer(messageData){
     console.log("success")
 
     //user display name in game
-    let author = messageData.author.username
+    let author = messageData.member.nick
     if(author == null){
         author = messageData.author.global_name
+    }
+    if(author == null){
+        author = messageData.author.username
     }
 
     //user avatar
@@ -112,6 +124,7 @@ ws.on('message', function incoming(data){
         setInterval(() => {ws.send(JSON.stringify({op: 1, d: null}))}, heartbeat_interval)
     }
     if (t == 'MESSAGE_CREATE'){
+        console.log(d)
         if(d.channel_id == process.env.DIS_TEXT_ID){
             if(numOfPlayers < 4 && !UIDtoPlayerIndex.has(d.author.id)){
                 addNewPlayer(d)
@@ -124,7 +137,7 @@ ws.on('message', function incoming(data){
 })
 
 function getPlayerData(){
-    console.log(players)
+    //console.log(players)
     return JSON.stringify(Array.from(players.entries()))
 }
 

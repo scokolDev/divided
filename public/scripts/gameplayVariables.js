@@ -5,7 +5,7 @@ const MAX_PLAYERS = 4 //players per game
 const LENGTH_OF_TIMEOUT = 10 //seconds per timeout
 const TAKEOVERS_PER_GAME = 2 
 const STARTING_BANK_AMOUNT = 0
-const UPDATE_INTERVAL = 25 //how often screen is updated during an active round in ms (lower is faster)
+const UPDATE_INTERVAL = 7 //how often screen is updated during an active round in ms (lower is faster)
 
 const KICK_ROUND_LENGTH = 60
 const FINAL_ROUND_LENGTH = 100
@@ -28,7 +28,7 @@ const CORRECT_COLOR = "rgb(0, 255, 0)"
 const CORRECT_Q_SHADOW = "rgb(2,30,20)"
 
 const WRONG_COLOR = "rgb(255, 0, 0)"
-//const WRONG_Q_SHADOW = 
+const WRONG_Q_SHADOW = "rgb(117, 7, 7)"
 
 const TAKEOVER_COLOR = "rgb(255,165,0)"
 const TAKEOVER_Q_SHADOW = "rgb(241, 90, 34)"
@@ -45,6 +45,7 @@ let roundEndTime = undefined
 let pauseEndTime = undefined
 let bankAmount = STARTING_BANK_AMOUNT //TODO: depricate
 let percentLeft
+let roundActive = false
 
 const playerManagerElement = new playerManager()
 const timerElement = new timer() 

@@ -6,19 +6,21 @@ class winningsTable{
 
         this.winContainer = document.getElementById("win")
         this.intWin = 0
+
         this.totalContainer = document.getElementById("total")
         this.intTotal = 0
+
         this.loseContainer = document.getElementById("lose")
         this.intLose = 0
     }
 
     setValues(total, win=undefined, lose=undefined){
-        this.totalContainer = formatCash(total)
+        this.totalContainer.innerHTML = formatCash(total)
         this.intTotal = total
 
         if(win != undefined){
-            this.winContainer = win ? formatCash(win) : ""
-            this.loseContainer = lose ? formatCash(lose) : ""
+            this.winContainer.innerHTML = formatCash(win)
+            this.loseContainer.innerHTML = formatCash(lose)
             this.intWin = win
             this.intLose = lose
         }else{
@@ -112,17 +114,17 @@ class winningsTable{
                 return
         }
     }
-    setTableData(total, winning = undefined, losing = undefined){
-        if(winning == undefined){
-            this.winContainer.style.visibility = "hidden"
-            this.loseContainer.style.visibility = "hidden"
-            this.totalContainer.innerHTML = formatCash(total)
-        }else{
-            this.totalContainer.innerHTML = formatCash(total)
-            this.winContainer.innerHTML = formatCash(winning)
-            this.loseContainer.innerHTML = formatCash(losing)
-        }
-    }
+    // setTableData(total, winning = undefined, losing = undefined){
+    //     if(winning == undefined){
+    //         this.winContainer.style.visibility = "hidden"
+    //         this.loseContainer.style.visibility = "hidden"
+    //         this.totalContainer.innerHTML = formatCash(total)
+    //     }else{
+    //         this.totalContainer.innerHTML = formatCash(total)
+    //         this.winContainer.innerHTML = formatCash(winning)
+    //         this.loseContainer.innerHTML = formatCash(losing)
+    //     }
+    // }
     set display(isDisplay){
         if(isDisplay){
             this.container.style.animation = "moveleft 1s";
@@ -153,6 +155,7 @@ class winningsTable{
         this.loseContainer.style.fontSize = "40px"
 
         this.container.style.visibility = "visible"
+        this.totalContainer.style.visibility = "visible"
         this.loseContainer.style.visibility = "visible"
         this.winContainer.style.visibility = "visible"
     }

@@ -1,0 +1,7 @@
+answerType,prompt,a,b,c,answer,award,time
+single,what's 9 + 10?,19,20,21,c,45000,100
+kick,,,,,,,
+order,Rank these presidents in order by their start year,William Howard Taft,Benjamin Harrison,Calvin Coolidge,bac,37500,60
+double,Which two of these are mammals?,Manatee,Turtle,Narwhal,ac,23344,60
+single,In what year did the Berlin Wall fall?,1984,1991,1989,a,17389,30
+final,,,,,,,

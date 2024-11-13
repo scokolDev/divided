@@ -90,7 +90,7 @@
 // let initialTime = time
 
 // const timer = document.getElementById("timer");
-// const holdAlert = document.getElementById("holdAlert")
+// const holdAlert = document.getElementById("holdAlert") 
 // const bank = document.getElementById("bank");
 
 // //sand clock
@@ -169,14 +169,14 @@ function setQuestionData(question){
         case "kick":
             qPrompt = KICK_ROUND_PROMPT
             playerData.forEach((player, playerNum) =>{
-                qAnswers.set(playerNum, player.name)
+                qAnswers.set(playerNum.toString(), player.name)
             })
 
             //set timer
             timerElement.time = KICK_ROUND_LENGTH
 
             //set time bar
-            timeBarElement.updateBar(1, question.get("award"))
+            timeBarElement.updateBar(1, bankElement.intAmount)
             break
 
         case "final":
@@ -187,29 +187,31 @@ function setQuestionData(question){
             timerElement.time = FINAL_ROUND_LENGTH
 
             //set time bar
-            timeBarElement.updateBar(1, question.get("award"))
+            timeBarElement.updateBar(1, bankElement.intAmount)
             break
         
         default:
-            qPrompt = question.get("prompt")
-            qAnswers.set('a', question.get('a'))
-            qAnswers.set('b', question.get('b'))
-            qAnswers.set('c', question.get('c'))
+            qPrompt = question.prompt
+            qAnswers.set('a', question.a)
+            qAnswers.set('b', question.b)
+            qAnswers.set('c', question.c)
 
             //set timer
-            timerElement.time = question.get("time")
+            timerElement.time = question.time
 
             //set time bar
-            timeBarElement.updateBar(1, question.get("award"))
+            timeBarElement.updateBar(1, question.award)
             break
     }
+    console.log(qAnswers)
     questionElement.setQuestionData(qPrompt, qAnswers)
 
 }
 async function getNextQuestion(){
     let res = await fetch(BASEURL + "getNextQuestion")
     let data = await res.json()
-    return new Map(JSON.parse(data))
+    console.log(data)
+    return data
 }
 function roundTakeover(ans, takeoverPlayerNum){
     numberOfTakeovers++
@@ -234,60 +236,88 @@ function updateAnswersNormal(questionType){
         //playerManagerElement.setPlayerAnswer(playerNum, ans)
         if(ans != undefined){
             if(ans === "takeover"){
+                let takeoverAns = playerManagerElement.getPlayerAnswer(playerNum)
                 if(numberOfTakeovers < TAKEOVERS_PER_GAME){
-                    let takeoverAns = playerManagerElement.getPlayerAnswer(playerNum)
-                    console.log(takeoverAns)
                     if(getAcceptableAnswers(questionType).has(takeoverAns)){
-                        roundTakeover(takeoverAns, playerNum) //TODO: round takeover
+                        roundTakeover(takeoverAns, playerNum)
                         return
                     }
-                }
-            }else{
-                let newAnswerAmount = (answerOccurrence.get(ans) ? answerOccurrence.get(ans) + 1 : 1)
-                if(newAnswerAmount >= playerData.size){
-                    consensusAnswer = ans //consensus reached
                 }else{
-                    answerOccurrence.set(ans, newAnswerAmount)
+                    ans = takeoverAns
                 }
-        
-                //TODO: update reference to frontend player objects
-                playerManagerElement.setPlayerAnswer(playerNum, ans)
             }
+            let newAnswerAmount = (answerOccurrence.get(ans) ? answerOccurrence.get(ans) + 1 : 1)
+            if(newAnswerAmount >= playerData.size){
+                consensusAnswer = ans //consensus reached
+            }else{
+                answerOccurrence.set(ans, newAnswerAmount)
+            }
+            playerManagerElement.setPlayerAnswer(playerNum, ans)
+            
         }
     })
 }
 
 //updates answers on global vars and on screen
 function updateAnswersKick(){
-    let currentAnswers = new Array(players.size)
     let answerOccurrence = new Map()
+    
 
-    for(let i = 0; i<players.size; i++){
-        let ans = players[i].answer
-        currentAnswers[i] = getAcceptableAnswers("kick").has(ans) ? ans : undefined
-        
-        //check for timeout
+    playerData.forEach((player, playerNum) =>{
+        console.log(player)
+        let ans =  getAcceptableAnswers("kick").has(player.answer) && player.answer != playerNum.toString() ? player.answer : undefined
+        //playerManagerElement.setPlayerAnswer(playerNum, ans)
         if(ans === "timeout"){
-            //TODO: update reference to frontend player objects
-            ans = playerElement.getPlayerAnswer(i)
-            if(!hasUsedTimeout[i] && getAcceptableAnswers("kick").has(ans)){
-                hasUsedTimeout[i] = true
-                queueTimeout(i) //TODO: round timeout
+            ans = getAcceptableAnswers("kick").has(playerManagerElement.getPlayerAnswer(playerNum)) ? playerManagerElement.getPlayerAnswer(playerNum) : undefined
+            if(!hasUsedTimeout.get(playerNum)){
+                hasUsedTimeout.set(playerNum, true)
+                timeoutQueue.push(playerNum)
             }
         }
-
-        //check for consensus
-        let newAnswerAmount = (answerOccurrence.get(ans) ? answerOccurrence.get(ans) + 1 : 1)
-        if(newAnswerAmount >= players.length){
-            consensusAnswer = ans //consensus reached
-        }else{
-            answerOccurrence.set(ans, newAnswerAmount)
+        if(ans != undefined){
+            //check for timeout
+            
+            let newAnswerAmount = (answerOccurrence.get(ans) ? answerOccurrence.get(ans) + 1 : 1)
+            if(newAnswerAmount >= playerData.size){
+                consensusAnswer = ans //consensus reached
+            }else{
+                answerOccurrence.set(ans, newAnswerAmount)
+            }
+            playerManagerElement.setPlayerAnswer(playerNum, ans)
+            
         }
+    })
 
-        //update player answers on screen
-        //TODO: update reference to frontend player objects
-        playerElement.setPlayerAnswer(ans, i)
-    }
+
+    /////////////////////////////////////////
+    // let currentAnswers = new Array(players.size)
+    // let answerOccurrence = new Map()
+
+    // for(let i = 0; i<players.size; i++){
+    //     let ans = players[i].answer
+    //     currentAnswers[i] = getAcceptableAnswers("kick").has(ans) ? ans : undefined
+        
+    //     //check for timeout
+    //     if(ans === "timeout"){
+    //         ans = playerElement.getPlayerAnswer(i)
+    //         if(!hasUsedTimeout[i] && getAcceptableAnswers("kick").has(ans)){
+    //             hasUsedTimeout[i] = true
+    //             timeoutQueue.push(playerIndex)
+    //         }
+    //     }
+
+    //     //check for consensus
+    //     let newAnswerAmount = (answerOccurrence.get(ans) ? answerOccurrence.get(ans) + 1 : 1)
+    //     if(newAnswerAmount >= players.length){
+    //         consensusAnswer = ans //consensus reached
+    //     }else{
+    //         answerOccurrence.set(ans, newAnswerAmount)
+    //     }
+
+    //     //update player answers on screen
+    //     //TODO: update reference to frontend player objects
+    //     playerElement.setPlayerAnswer(ans, i)
+    // }
 }
 
 //updates answers on global vars and on screen
@@ -312,11 +342,6 @@ function updateAnswersFinal(){
     }
 }
 
-
-
-function queueTimeout(playerIndex){
-    timeoutQueue.push(playerIndex)
-}
 function addPauseIfQueued(currentTime){
     if(timeoutQueue.size > 0){
         playerIndex = timeoutQueue[0]
@@ -359,36 +384,41 @@ function updateFinalAnswerAmounts(){
     questionElement.setAnswers(calcFinalAnswers())
 }
 async function startRound(curQ){
-    await waitForContinue()
     await clearAnswers()
+    await waitForContinue()
+    await fetch(BASEURL + 'setRoundActive/true')
     roundStartTime = Date.now()
 
     let roundLength = 0
-    switch(curQ.get("answerType")){
+    let award = 0
+    switch(curQ.answerType){
         case "final":
-            roundLength = (FINAL_ROUND_PROMPT * 1000)
+            roundLength = (FINAL_ROUND_LENGTH * 1000)
+            award = bankElement.intAmount
             break
         case "kick":
             roundLength = (KICK_ROUND_LENGTH * 1000)
+            award = bankElement.intAmount
             break
         default:
-            roundLength = (parseInt(curQ.get("time"), 10) * 1000)
+            roundLength = (parseInt(curQ.time, 10) * 1000)
+            award = curQ.award
     }
 
     roundEndTime = roundStartTime + roundLength
     let currentTime = roundStartTime
-    let roundActive = true
+    roundActive = true
     consensusAnswer = undefined
     percentLeft = 1
-    let potentialWinnings = percentLeft * parseInt(curQ.get("award"), 10)
+    let potentialWinnings = percentLeft * parseInt(award, 10)
 
     //round loop
     let roundInterval = setInterval(() =>{
         if(!roundActive){return}
         currentTime = Date.now()
         
-        updateAnswers(curQ.get("answerType"))
-        if(isConsensus(curQ.get("answerType"), consensusAnswer, finalPlayerStanding)){
+        updateAnswers(curQ.answerType)
+        if(isConsensus(curQ.answerType, consensusAnswer, finalPlayerStanding)){
             endRound()
             return
         }
@@ -399,7 +429,7 @@ async function startRound(curQ){
             percentLeft = (roundEndTime - currentTime) / roundLength 
             percentLeft = percentLeft > 0 ? percentLeft : 0
 
-            potentialWinnings = percentLeft * parseInt(curQ.get("award"), 10)
+            potentialWinnings = percentLeft * parseInt(award, 10)
             
             timerElement.time = (percentLeft * roundLength)/1000
             timeBarElement.updateBar(percentLeft, potentialWinnings)
@@ -417,35 +447,44 @@ async function startRound(curQ){
             if(currentTime >= pauseEndTime){removePause()}
         }
         
-        if(curQ.get("answerType") == "final"){updateFinalAnswerAmounts()}
+        if(curQ.answerType == "final"){updateFinalAnswerAmounts()}
     }, UPDATE_INTERVAL)
 
     const endRound = () => {
+        if(pauseEndTime != undefined){removePause()}
         roundActive = false
         clearInterval(roundInterval)
-        winningsTableElement.setTableData(bankElement.intAmount, bankElement.intAmount+potentialWinnings, bankElement.intAmount/2)
+        fetch(BASEURL + 'setRoundActive/false')
+        switch(curQ.answerType){
+            case "kick":
+                winningsTableElement.setValues(potentialWinnings)
+                questionElement.revealCorrectAnswers(consensusAnswer)
+                bankElement.setAmount(potentialWinnings)
+                break
+            case "final":
+                break
+            default:
+                winningsTableElement.setValues(bankElement.intAmount, (bankElement.intAmount+potentialWinnings), (bankElement.intAmount/2))
+        }
         winningsTableElement.display = true
         
     }
-
-    
-       
-    
-    //TODO: put table on screen to show possible win/loss
 }
 
-async function revealRoundResults(correctAnswer){
-    await waitForContinue()
+function revealRoundResults(correctAnswer){
 
     questionElement.revealCorrectAnswers(correctAnswer)
 
     if(consensusAnswer == correctAnswer){
         winningsTableElement.revealResult("win")
-        bankElement.amount = winningsTableElement.intWin
+        bankElement.setAmount(winningsTableElement.intWin)
+        console.log(winningsTableElement.intWin)
+        console.log(bankElement.intAmount)
+        console.log(bankElement.container.innerHTML)
         correctAnswerCSS()
     }else{
         winningsTableElement.revealResult("lose")
-        bankElement.amount = winningsTableElement.intLose
+        bankElement.setAmount(winningsTableElement.intLose)
         wrongAnswerCSS()
     }
 }
@@ -463,27 +502,42 @@ async function loadQuestionOnScreen(QuestionType){
         questionElement.displayAnswer(idxToLetter.get(i))
     }
 }
-function resetGameDisplay(){
+async function resetGameDisplay(){
+    await waitForContinue()
     resetBoard()
 }
 async function main(){
-    //console.log(getAcceptableAnswers("single"))
-    while(true){
+    let gameActive = true
+    while(gameActive){
+        await fetch(BASEURL + 'setRoundActive/false')
+
         let currentQuestion = await getNextQuestion()
         
-        //console.log(currentQuestion)
         setQuestionData(currentQuestion)
 
-        await loadQuestionOnScreen(currentQuestion.get("answerType"))
+        await loadQuestionOnScreen(currentQuestion.answerType)
 
         await startRound(currentQuestion)
 
-        if(currentRoundType != "final"){
-            await revealRoundResults(currentQuestion.get("answer"))
-
-            await waitForContinue()
-            resetGameDisplay()
-        }else{break}
+        switch(currentQuestion.answerType){
+            case "final":
+                gameActive = false
+                await waitForContinue()
+                break
+            case "single":
+            case "double":
+            case "order":
+                await waitForContinue()
+                revealRoundResults(currentQuestion.answer)
+            case "kick":
+                await resetGameDisplay()
+                break
+        }
+        // if(currentQuestion.answerType != "kick"){await waitForContinue()}
+        // if(currentRoundType != "final"){
+        //     if(currentQuestion.answerType != "kick"){revealRoundResults(currentQuestion.answer)}
+        //     await resetGameDisplay()
+        // }else{break}
     }
 
     //serialize final data to json

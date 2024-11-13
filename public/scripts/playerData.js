@@ -4,6 +4,9 @@ var hasUsedTimeout = new Map()
 
 async function clearAnswers(){
     await fetch(BASEURL + "clearAnswers")
+    playerData.forEach((player) => {
+        player.answer = undefined
+    })
 }
 
 function updateSpeaking(playerNumber){

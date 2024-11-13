@@ -119,15 +119,15 @@ class QuestionDisplay {
         this.wrapper.style.animation = "";
         this.wrapper.style.top = "1080px";
 
-        this.aBox.left = "200px"
-        this.bBox.left = "200px"
-        this.cBox.left = "200px"
-        this.dBox.left = "200px"
+        this.aBox.style.left = "200px"
+        this.bBox.style.left = "200px"
+        this.cBox.style.left = "200px"
+        this.dBox.style.left = "200px"
 
-        this.aBox.top = "120px"
-        this.bBox.top = "210px"
-        this.cBox.top = "300px"
-        this.dBox.top = "390px"
+        this.aBox.style.top = "120px"
+        this.bBox.style.top = "210px"
+        this.cBox.style.top = "300px"
+        this.dBox.style.top = "390px"
 
         this.aBox.style.visibility = "hidden"
         this.bBox.style.visibility = "hidden" 
