@@ -64,7 +64,8 @@ class playerManager{
         this.playerMap.get(playerIndex).answer = answer
     }
     removePlayer(playerIndex){
-        //TODO: add removal of player
+        this.playerMap.get(playerIndex).boxWrapper.style.visibility = "hidden"
+        this.playerMap.delete(playerIndex)
     }
 
     getPlayerBox(playerIndex){

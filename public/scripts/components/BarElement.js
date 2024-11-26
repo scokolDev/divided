@@ -23,6 +23,7 @@ class timeBar {
             this.numBox.innerHTML = ""
         }
         let modifier = percentLeft >= 0 ? percentLeft : 0
+        //modifier = remainingCash === 0 ? 0 : modifier
         let remainingHeight = this.initHeight * modifier;
         this.bar.style.height = remainingHeight + "px";
         this.bar.style.top = (this.initHeight-remainingHeight)-1 + "px";

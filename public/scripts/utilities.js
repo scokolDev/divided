@@ -60,30 +60,30 @@ const formatCash = (money) =>{
 }
 
 
-const Startflash = (element, delay1, color1, color2) => {
-    let counter = 0;
-    return setInterval(function timerColor () {
-        element.style.color = counter % 2 == 0 ? color1 : color2;
-        counter++;
-    }, delay1);
-}
+// const Startflash = (element, delay1, color1, color2) => {
+//     let counter = 0;
+//     return setInterval(function timerColor () {
+//         element.style.color = counter % 2 == 0 ? color1 : color2;
+//         counter++;
+//     }, delay1);
+// }
 
 function adjustTextToFillCon(container, initialFontSize, isVertical){
     let basefontsize = initialFontSize
     container.style.fontSize = basefontsize + "px"
-    console.log(container.getAttribute("class") + "t size readjust:" + container.scrollWidth + " " + 
-    container.clientWidth + " " + 
-        container.style.fontSize)
+    //console.log(container.getAttribute("class") + "t size readjust:" + container.scrollWidth + " " + 
+    //container.clientWidth + " " + 
+    //    container.style.fontSize)
     while ((!isVertical && container.scrollWidth > container.clientWidth) || (isVertical && container.scrollHeight > container.clientHeight)) {
         // if(basefontsize == 20){return}/////////////////////
-        console.log(container.getAttribute("id") + "t size readjust:" + container.scrollWidth + " " + 
-        container.clientWidth + " " + 
-        container.style.fontSize)
+        //console.log(container.getAttribute("id") + "t size readjust:" + container.scrollWidth + " " + 
+        //container.clientWidth + " " + 
+        //container.style.fontSize)
         container.style.fontSize = (basefontsize--) + "px";
     }
-    console.log(container.getAttribute("id") + "t size readjust:" + container.scrollWidth + " " + 
-        container.clientWidth + " " + 
-        container.style.fontSize)
+    //console.log(container.getAttribute("id") + "t size readjust:" + container.scrollWidth + " " + 
+    //    container.clientWidth + " " + 
+    //   container.style.fontSize)
     return basefontsize
 }
 
@@ -100,4 +100,15 @@ function getAcceptableAnswers(questionType){
         case "final":
             return acceptableFinalAnswersMap
     }
+}
+
+async function waitForContinue(){
+    let res
+    let data
+    do{
+        res = await fetch(BASEURL + "waiting")
+        data = await res.json()
+    }while(!data.continue == true)
+
+    return
 }

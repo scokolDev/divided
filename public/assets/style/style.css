@@ -26,8 +26,8 @@ body{
 .winningScreen{
     width: 100svw;
     height: 100svh;
-    display: none;
-    /* display: flex; */
+    /* display: none; */
+    display: flex;
     justify-content: space-around;
     background: linear-gradient(320deg, #eb92e4, #000000, #63c9b4);
 }
@@ -109,8 +109,8 @@ body{
     width: 10%;
     height: 40%;
     align-self: center;
-    visibility: hidden;
-    background-image: url(../img/yayzog.gif);
+    visibility: visible;
+    background-image: url(../img/leaderBoardPanel.gif);
     background-position: -40px;
     background-repeat: no-repeat;
     background-size: cover;
@@ -234,7 +234,6 @@ body{
     
 }
 
-
 .timer{
     height: 100px;
     line-height: 75px;
@@ -324,7 +323,7 @@ body{
     position: absolute;
     top: 300px;
     left: 1650px;
-    background-image: url(../img/zog.gif);
+    background-image: url(../img/barBackground.gif);
     background-position: -170px;
     /*background-color: #292929;*/
     border: 10px solid rgb(14, 14, 14);

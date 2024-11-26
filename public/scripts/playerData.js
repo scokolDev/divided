@@ -1,4 +1,5 @@
 var numOfPlayers = 0
+var kickedPlayer = undefined
 var playerData = new Map()
 var hasUsedTimeout = new Map()
 
@@ -17,65 +18,27 @@ function updateSpeaking(playerNumber){
     }
 }
 
+async function deletePlayerData(playerNum){
+    kickedPlayer = playerData.get(playerNum)
+    playerData.delete(playerNum)
+    await fetch(BASEURL + "kickPlayer/" + playerNum)
+}
+
 async function updatePlayerData(){
     const res = await fetch(BASEURL + "playerData")
     let data = await res.json()
     data = new Map(JSON.parse(data))
 
     data.forEach((player, playerNum) => {
-        //console.log(key + " === " + value)
-        if(!playerData.has(playerNum)){
-            playerManagerElement.addPlayer(player.playerNumber, player.name, player.avatar)
-            hasUsedTimeout.set(playerNum, false)
+        if(!playerData.has(playerNum) && (kickedPlayer == undefined || playerNum != kickedPlayer.playerNum)){
+                playerManagerElement.addPlayer(player.playerNumber, player.name, player.avatar)
+                hasUsedTimeout.set(playerNum, false)
+                playerData.set(player.playerNumber, player)
+        }else if(playerData.has(playerNum)){
+            playerData.set(player.playerNumber, player)
+            updateSpeaking(player.playerNumber)
         }
-        playerData.set(player.playerNumber, player)
-        //console.log(player.name + " " + player.answer)
-        updateSpeaking(player.playerNumber)
     })
     
 }
 setInterval(updatePlayerData, 50)
-
-
-
-
-
-
-
-
-
-
-
-
-
-// async function pollForNames(){
-//     console.log("playerInterval set:" + !playerInterval)
-//     activePlayers = []
-//     const res = await fetch(baseURL + "displaynames")
-//     const data = await res.json()
-
-//     const names = [data.player1, data.player2, data.player3, data.player4]
-
-//     const imgRes = await fetch(baseURL + "avatars")
-//     const imgData = await imgRes.json()
-
-//     const avatars = [imgData.player1, imgData.player2, imgData.player3, imgData.player4]
-
-//     for(i=0; i<4; i++){
-//         if(names[i] != undefined){
-//             playerNameElements[i].innerHTML = names[i]
-//             let bgImageStr = "url(" + avatars[i] +")"
-//             playerBoxElements[i].style.backgroundImage = bgImageStr
-//             adjustTextToFillCon(playerNameElements[i], 55, false)
-//             console.log(i + ":  " + playerNameElements[i].style.fontSize)
-//             activePlayers.push(names[i])
-//         }
-//     }
-//     if(activePlayers.length == _MAX_PLAYERS){//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////start looking for question when n people join the game 
-//         clearInterval(playerInterval)
-//         console.log("playerInterval cleared:" + !playerInterval)
-//         listenForQuestion()
-//     }
-//     console.log("-=---------" + activePlayers)
-    
-// };

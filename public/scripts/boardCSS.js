@@ -26,7 +26,6 @@ function wrongAnswerCSS(){
 
     playerManagerElement.setPlayerColor(WRONG_COLOR)
     questionElement.setColor(WRONG_COLOR, WRONG_Q_SHADOW, true)
-    //setPlayerColor(WRONG_COLOR)
 }
 
 function correctAnswerCSS(){
@@ -34,5 +33,4 @@ function correctAnswerCSS(){
 
     playerManagerElement.setPlayerColor(CORRECT_COLOR)
     questionElement.setColor(CORRECT_COLOR, CORRECT_Q_SHADOW, true)
-    //setPlayerColor(CORRECT_COLOR)
 }
