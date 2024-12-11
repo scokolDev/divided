@@ -147,18 +147,9 @@ const timeBarElement = new timeBar()
 const bankElement = new bank(STARTING_BANK_AMOUNT)
 const winningsTableElement = new winningsTable()
 const questionElement = new QuestionDisplay()
+const takeoverDisplayElement = new takeoverDisplay()
 
 
-// async function waitForContinue(){
-//     let res
-//     let data
-//     do{
-//         res = await fetch(BASEURL + "waiting")
-//         data = await res.json()
-//     }while(!data.continue == true)
-
-//     return
-// }
 function calcFinalAnswers(remainingAmount){
     return new Map([
         ['1', formatCash((remainingAmount * FIRST_PLACE_MODIFIER).toFixed(2))],
@@ -222,6 +213,7 @@ async function getNextQuestion(){
 }
 function roundTakeover(ans, takeoverPlayerNum){
     numberOfTakeovers++
+    takeoverDisplayElement.remainingTakeovers = TAKEOVERS_PER_GAME - numberOfTakeovers
     consensusAnswer = ans
 
     playerData.forEach((player, playerNum) => {
@@ -229,7 +221,6 @@ function roundTakeover(ans, takeoverPlayerNum){
     })
 
     playerManagerElement.setPlayerAnswer(takeoverPlayerNum, "🙋‍♂️")
-    //TODO: add takeover css
     takeoverBoardCSS()
 }
 //updates answers on global vars and on screen
@@ -239,7 +230,7 @@ function updateAnswersNormal(questionType){
 
     playerData.forEach((player, playerNum) =>{
         console.log(player)
-        let ans =  getAcceptableAnswers(questionType).has(player.answer) ? player.answer : undefined
+        let ans = getAcceptableAnswers(questionType).has(player.answer) ? player.answer : undefined
         if(ans == undefined){
             ans = getAcceptableAnswers(questionType).has(playerManagerElement.getPlayerAnswer(playerNum)) ? playerManagerElement.getPlayerAnswer(playerNum) : undefined
         }
@@ -287,7 +278,8 @@ function updateAnswersKick(){
                 hasUsedTimeout.set(playerNum, true)
                 timeoutQueue.push(playerNum)
             }
-        }else if(ans != undefined){
+        }
+        if(ans != undefined){
             //check for timeout
             
             let newAnswerAmount = (answerOccurrence.get(ans) ? answerOccurrence.get(ans) + 1 : 1)

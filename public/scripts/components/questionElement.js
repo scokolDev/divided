@@ -117,7 +117,7 @@ class QuestionDisplay {
         this.setColor(DEFAULT_COLOR, DEFAULT_Q_SHADOW, false)
 
         this.wrapper.style.animation = "";
-        this.wrapper.style.top = "1080px";
+        this.wrapper.style.top = "1200px";
 
         this.aBox.style.left = "200px"
         this.bBox.style.left = "200px"

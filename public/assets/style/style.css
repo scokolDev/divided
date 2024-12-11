@@ -135,6 +135,20 @@ body{
     width: 600px;
     height: 580px;
 }
+.takeoverDisplay{
+    position: absolute;
+    background-color: rgb(0, 255, 242);
+    border: 10px solid rgb(0, 0, 0);
+    line-height: 75px;
+    text-align: center;
+    font-family: VegMeister;
+    font-size: 40px;
+    border-radius: 15px;
+    width: 250px;
+    height: 100px;
+    left: 1625px;
+    top: 975px;
+}
 .answerBox{
     align-self: center;
     justify-self: center;
@@ -541,7 +555,7 @@ body{
     height: 350px;
     width: 750px;
     left: 650px;
-    top: 1080px;
+    top: 1200px;
     position: absolute;
 }
 .prompt{
