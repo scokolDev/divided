@@ -1,40 +1,72 @@
 const acceptableSingleAnswersMap = new Map([
-    ["a", true],
-    ["b", true],
-    ["c", true],
-    ["takeover", true],
+    ["a", "a"],
+    ["b", "b"],
+    ["c", "c"],
+    ["takeover", "takeover"],
 ])
 
 const acceptableDoubleAnswersMap = new Map([
-    ["ab", true],
-    ["ac", true],
-    ["bc", true],
-    ["takeover", true],
+    ["ab", "ab"],
+    ["ba", "ab"],
+    ["bc", "bc"],
+    ["cb", "bc"],
+    ["ac", "ac"],
+    ["ca", "ac"],
+    ["takeover", "takeover"],
 ])
 
 const acceptableOrderAnswersMap = new Map([
-    ["abc", true],
-    ["acb", true],
-    ["bac", true],
-    ["bca", true],
-    ["cab", true],
-    ["cba", true],
-    ["takeover", true],
+    ["abc", "abc"],
+    ["acb", "acb"],
+    ["bac", "bac"],
+    ["bca", "bca"],
+    ["cab", "cab"],
+    ["cba", "cba"],
+    ["takeover", "takeover"],
 ])
 
 const acceptableKickAnswersMap = new Map([
-    ["1", true],
-    ["2", true],
-    ["3", true],
-    ["4", true],
-    ["timeout", true],
+    ["1", "1"],
+    ["2", "2"],
+    ["3", "3"],
+    ["4", "4"],
+    ["timeout", "timeout"],
 ])
 
 const acceptableFinalAnswersMap = new Map([
-    ["1", true],
-    ["2", true],
-    ["3", true],
+    ["1", "1"],
+    ["2", "2"],
+    ["3", "3"],
 ])
+
+function getAnswer(questionType, inputAnswer){
+    try{
+        switch(questionType){
+            case "single":
+                return acceptableSingleAnswersMap.get(inputAnswer)
+            case "double": 
+                return acceptableDoubleAnswersMap.get(inputAnswer)
+            case "order":
+                return acceptableOrderAnswersMap.get(inputAnswer)
+            case "kick":
+                return acceptableKickAnswersMap.get(inputAnswer)
+            case "end":
+                return acceptableFinalAnswersMap.get(inputAnswer)
+        }
+    }catch{
+        return undefined
+    }
+    
+}
+
+
+function calcFinalAnswers(remainingAmount){
+    return new Map([
+        ['1', formatCash((remainingAmount * FIRST_PLACE_MODIFIER).toFixed(2))],
+        ['2', formatCash((remainingAmount * SECOND_PLACE_MODIFIER).toFixed(2))],
+        ['3', formatCash((remainingAmount * THIRD_PLACE_MODIFIER).toFixed(2))],
+    ])
+}
 
 //converts float to string money value with $ and commas. rounds to 2 places
 //
