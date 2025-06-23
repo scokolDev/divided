@@ -6,8 +6,8 @@
   be awarded for answering the question correctly.
 
 # Create Env File
-<p>TOKEN = discord bot token
-  DIS_SERVER_ID = discord server id of server bot will be in
+<p>TOKEN = discord bot token \t
+  DIS_SERVER_ID = discord server id of server bot will be in \t
   DIS_CHANNEL_ID = discord voice channel id that bot will join and monitor</p>
   
 
