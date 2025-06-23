@@ -1,5 +1,5 @@
 <H1> Divided Game Show </H1>
-<H2> commissioned by BobFilligen </H2>
+<H2> commissioned by Bobfilligen </H2>
 
   Jackbox-style online multiplayer game in which there is one host and four contestants. The host shares the game screen which will display pre-entered trivia questions. 
   Contestants must reach a consensus answer to each trivia question for the question timer to stop. The longer it takes to reach a full consensus, the less prize money will
