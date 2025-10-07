@@ -1,4 +1,4 @@
-import './discord_players.js'
+//import './discord_players.js'
 import { app, BrowserWindow } from 'electron'
 
 // import { startDiscordBot} from './discord_players.js'
@@ -10,7 +10,8 @@ const createWindow = () => {
     height: 600
   })
 
-  win.loadFile('index.html')
+  win.loadFile('src/UI/pages/index.html')
+  win.webContents.openDevTools();
 }
 console.log("hello")
 app.whenReady().then(() => {

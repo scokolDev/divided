@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- <link rel="stylesheet" href="src/UI/assets/style/style.css"> -->
+
+        <link rel="stylesheet" href="../assets/style/style.css">
+
+        <title>Divided</title>
+
+        <style id="dynamicStyle"></style>
+    </head>
+    <body>
+        <div class="wrapper" id="wrapper">
+            <div class="question" id="quesionBox">
+                <div class="prompt" id="prompt"><div class="QuestionConText" id="QuestionConText"></div></div>
+                <div class="aBox" id="aBox"><div class="letterContainer"><div class="letter" id="A">A</div></div><div class="conText" id="aAnswer"></div></div>
+                <div class="bBox" id="bBox"><div class="letterContainer"><div class="letter" id="B">B</div></div><div class="conText" id="bAnswer"></div></div>
+                <div class="cBox" id="cBox"><div class="letterContainer"><div class="letter" id="C">C</div></div><div class="conText" id="cAnswer"></div></div>
+                <div class="dBox" id="dBox"><div class="letterContainer"><div class="letter" id="D">D</div> </div> <div class="conText" id="dAnswer"></div></div>
+            </div>
+            <div  class="table" id="table">
+                <div class="win" id="win"></div>
+                <div class="total" id="total"></div>
+                <div class="lose" id="lose"></div>
+            </div>
+            <div class="answerBoxWrapper" id="answerBoxWrapper">
+                <!-- <div class="answerBox" id="player1Box">
+                    <div id="player1Film">
+                        <div class="playerName" id="player1Name">
+
+                        </div>
+                        <div class="playerAnswer" id="player1Answer">
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="answerBox" id="player2Box">
+                    <div id="player2Film">
+                        <div class="playerName" id="player2Name">
+
+                        </div>
+                        <div class="playerAnswer" id="player2Answer" style="background-size: cover;">
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="answerBox" id="player3Box">
+                    <div id="player3Film">
+                        <div class="playerName" id="player3Name">
+                            
+                        </div>
+                        <div class="playerAnswer" id="player3Answer">
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="answerBox" id="player4Box">
+                    <div id="player4Film">
+                        <div class="playerName" id="player4Name">
+
+                        </div>
+                        <div class="playerAnswer" id="player4Answer">
+                            
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+            <div  class="bank" id="bank"></div>
+            
+            <div class="timer" id="timer">3</div>
+            <div class="holdAlert" id="holdAlert"></div>
+            <div class="sand-clock">
+                <div id="bar" class="bar" ></div>
+                <div id="handle" class="handle"></div>
+                <div id="num-box" class="num-box"></div>
+            </div>
+
+            <div class="takeoverDisplay" id="takeoverDisplay">
+                2
+            </div>
+        </div>
+        <!-- <script src="/scripts/index.js"></script> -->
+        <script src="../scripts/utilities.js"></script>
+        <script src="../scripts/components/bankElement.js"></script>
+        <script src="../scripts/components/questionElement.js"></script>
+        <script src="../scripts/components/BarElement.js"></script>
+        <script src="../scripts/components/playerBoxElements.js"></script>
+        <script src="../scripts/components/timerElement.js"></script>
+        <script src="../scripts/components/winningsTableElement.js"></script>
+        <script src="../scripts/components/takeoverDisplay.js"></script>
+        <script src="../scripts/gameplayVariables.js"></script>
+        <script src="../scripts/boardCSS.js"></script>
+        <script src="../scripts/playerData.js"></script>
+        <script src="../scripts/index.js"></script>
+    </body>
+</html>

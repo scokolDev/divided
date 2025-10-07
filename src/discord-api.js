@@ -64,4 +64,4 @@ class discordAPI{
     }
 }
 
-export default discordAPI
+export default {discordAPI}
